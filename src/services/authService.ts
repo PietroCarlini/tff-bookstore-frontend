@@ -1,5 +1,4 @@
-import { LoginCredentials, RegisterData, AuthResponse } from "@/types/authTypes";
-
+import { LoginCredentials, RegisterData, RegisterBookshopData, AuthResponse } from "@/types/authTypes";
 const API_URL = process.env.API_URL; 
 
 //* AuthResponse: manages the datas 'expected shape' / loginRequest return a Promise: TS expects the resolved value will confrm to that 'shape'
@@ -26,6 +25,23 @@ export async function registerRequest(
     data: RegisterData
 ): Promise<AuthResponse> {
     const res = await fetch(`${API_URL}/auth/register`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json();
+        throw new Error(errorData.message || "Registration failed");
+    }
+
+    return res.json();
+}
+
+export async function registerBookshopRequest(
+    data: RegisterBookshopData
+): Promise<AuthResponse> {
+    const res = await fetch(`${API_URL}/auth/register-bookshop`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify(data),

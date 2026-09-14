@@ -33,8 +33,12 @@ export default function LoginForm() {
             //if login failed -> error message and return skipping router.push
             return;
         }
-        //redirecting to home logged in
-        router.push("/home");
+        //redirecting to home logged in, based on user type
+        if (result.user.type === "bookshop") {
+            router.push("/bookshop");
+        } else {
+            router.push("/client");
+        }
     }
 
     return (
