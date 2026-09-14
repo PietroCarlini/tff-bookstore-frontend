@@ -11,6 +11,7 @@ export interface RegisterData {
     lastname: string;
     email: string;
     password: string;
+    confirmPassword: string;
 }
 
 // Resposnse structure from Backend (login/register)

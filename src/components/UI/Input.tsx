@@ -4,6 +4,7 @@ interface InputProps {
     //* ? means optional: this prop can be omitted (becomes undefined if not passed). The actual default value ("text") is set separately below, in the destructuring
     type?: string,
     value: string;
+    //React.ChangeEvent<HTMLInputElement>: TS type of Elment, here INPUT
     onChange: (e: React.ChangeEvent<HTMLInputElement>) => void;
     error?: string;
     required?: boolean;
