@@ -1,4 +1,5 @@
-import { LoginCredentials, RegisterData, RegisterBookshopData, AuthResponse } from "@/types/authTypes";
+import { LoginCredentials, RegisterData, RegisterBookshopData, AuthResponse, UserProfile } from "@/types/authTypes";
+import { headers } from "next/headers";
 const API_URL = process.env.API_URL; 
 
 //* AuthResponse: manages the datas 'expected shape' / loginRequest return a Promise: TS expects the resolved value will confrm to that 'shape'
@@ -50,6 +51,18 @@ export async function registerBookshopRequest(
     if (!res.ok) {
         const errorData = await res.json();
         throw new Error(errorData.message || "Registration failed");
+    }
+
+    return res.json();
+}
+
+export async function getProfileRequest(token: string): Promise<UserProfile>{
+    const res = await fetch(`${API_URL}/auth/me`, {
+        headers: { Authorization: `Bearer ${token}` },
+        cache: "no-store",
+    })
+    if (!res.ok) {
+        throw new Error("Failed to load profile");
     }
 
     return res.json();

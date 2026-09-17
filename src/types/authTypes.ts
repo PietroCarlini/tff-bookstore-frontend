@@ -38,3 +38,24 @@ export interface AuthResponse {
     user: AuthUser;
 }
 
+//User Profile
+export interface ClientProfile {
+    firstname: string;
+    lastname: string;
+    email: string;
+}
+
+export interface BookshopProfile {
+    name: string;
+    email: string;
+    city: string;
+    address: string;
+}
+
+export interface UserProfile {
+    id: number;
+    email: string;
+    role: "User" | "Admin";
+    client: ClientProfile | null;
+    bookshop: BookshopProfile | null;
+}

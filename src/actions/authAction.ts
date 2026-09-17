@@ -1,8 +1,9 @@
 "use server";
 
 import { cookies } from 'next/headers';
-import { loginRequest, registerRequest, registerBookshopRequest } from '@/services/authService';
-import { LoginCredentials, RegisterData, RegisterBookshopData, AuthUser } from '@/types/authTypes';
+import { loginRequest, registerRequest, registerBookshopRequest, getProfileRequest } from '@/services/authService';
+import { LoginCredentials, RegisterData, RegisterBookshopData, AuthUser, UserProfile } from '@/types/authTypes';
+import { redirect } from "next/navigation";
 
 
 //* Explicit discriminated union: keeps success as literal true/false (not widened to boolean) so TS can narrow user vs message
@@ -12,7 +13,7 @@ type AuthActionResult =
 
 
 //* Explicit return type needed for narrowing to work where this action is called (see above AuthActionResult)
-export async function loginAction(credentials: LoginCredentials): Promise<AuthActionResult> {    
+export async function loginAction(credentials: LoginCredentials): Promise<AuthActionResult> {
     try {
         const { token, user } = await loginRequest(credentials);
 
@@ -37,7 +38,7 @@ export async function loginAction(credentials: LoginCredentials): Promise<AuthAc
     }
 };
 
-export async function registerAction(data: RegisterData): Promise<AuthActionResult> {    
+export async function registerAction(data: RegisterData): Promise<AuthActionResult> {
     try {
         const { token, user } = await registerRequest(data)
 
@@ -82,3 +83,18 @@ export async function registerBookshopAction(data: RegisterBookshopData): Promis
         };
     }
 };
+
+export async function getProfileAction(): Promise<UserProfile> {
+    const cookieStore = await cookies();
+    const token = cookieStore.get('token')?.value;
+    if(!token) {
+        throw new Error('Not authenticated');
+    }
+    return getProfileRequest(token)
+}
+
+export async function logoutAction():Promise<void> {
+    const cookieStore = await cookies();
+    cookieStore.delete('token');
+    redirect('/login')
+}
