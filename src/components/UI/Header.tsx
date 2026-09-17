@@ -35,7 +35,7 @@ export default function Header() {
                     <Link href="/client/my-lists" className="font-sans text-sm font-medium text-white hover:text-muted-teal">
                         My lists
                     </Link>
-                    <Link href="/client/orders" className="font-sans text-sm font-medium text-white hover:text-muted-teal">
+                    <Link href="/client/order-history" className="font-sans text-sm font-medium text-white hover:text-muted-teal">
                         Orders
                     </Link>
                     <Link

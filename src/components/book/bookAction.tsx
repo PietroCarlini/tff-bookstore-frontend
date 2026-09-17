@@ -25,7 +25,7 @@ export default function BookActions({ isbn, title, author, cover }: BookActionsP
     function handleOrder() {
         const params = new URLSearchParams({ isbn, title, author });
         if(cover) params.set('cover', cover);
-        router.push(`/client/order?${params.toString()}`)
+        router.push(`/client/place-order?${params.toString()}`)
     }
 
     return (

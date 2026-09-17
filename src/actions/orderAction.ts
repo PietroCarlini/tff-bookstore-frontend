@@ -2,7 +2,8 @@
 
 import { cookies } from "next/headers";
 import { getBookshops } from "@/services/bookshopService";
-import { createOrder } from "@/services/orderService";
+import { createOrder, getMyOrders } from "@/services/orderService";
+import { Order } from "@/types/orderTypes";
 import { Bookshop } from "@/types/bookshopTypes";
 import { NewOrderData } from "@/types/orderTypes";
 
@@ -35,4 +36,9 @@ export async function createOrderAction(data: NewOrderData): Promise<CreateOrder
             message: error instanceof Error ? error.message : 'Failed to send order',
         }
     }
+}
+
+export async function getMyOrdersAction(): Promise<Order[]> {
+    const token = await getToken();
+    return getMyOrders(token)
 }

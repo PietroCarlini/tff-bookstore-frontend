@@ -9,7 +9,7 @@ interface BurgerMenuProps {
 
 const links = [
     { href: "/client/my-lists", label: "My Lists" },
-    { href: "/client/orders", label: "Orders" },
+    { href: "/client/order-history", label: "Orders" },
     { href: "/client/profile", label: "Profile" },
 ];
 
