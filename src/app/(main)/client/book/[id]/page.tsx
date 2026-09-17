@@ -40,7 +40,7 @@ export default async function BookDetailsPage(
                 <p className="font-sans text-sm font-medium text-carbon">
                     {book.description}
                 </p>
-                <BookActions isbn={book.isbn} />
+                <BookActions isbn={book.isbn} title={book.title} author={book.authors.join(", ")} cover={book.cover} />
             </div >
         </main>
     )

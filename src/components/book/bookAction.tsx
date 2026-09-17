@@ -1,12 +1,17 @@
 "use client";
-
+import { useRouter } from "next/navigation";
 import Button from "@/components/UI/Button";
 
 interface BookActionsProps {
     isbn: string;
+    title: string;
+    author: string;
+    cover: string | null;
 }
 
-export default function BookActions({ isbn }: BookActionsProps) {
+export default function BookActions({ isbn, title, author, cover }: BookActionsProps) {
+    const router = useRouter();
+
     function handleAddToWishlist() {
         // TODO: call Wishlist endpoint with isbn
         console.log("Add to wishlist:", isbn);
@@ -18,8 +23,9 @@ export default function BookActions({ isbn }: BookActionsProps) {
     }
 
     function handleOrder() {
-        // TODO: call Order endpoint with isbn
-        console.log("Order:", isbn);
+        const params = new URLSearchParams({ isbn, title, author });
+        if(cover) params.set('cover', cover);
+        router.push(`/client/order?${params.toString()}`)
     }
 
     return (
