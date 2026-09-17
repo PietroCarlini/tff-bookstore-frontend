@@ -4,7 +4,7 @@ import { useState } from "react";
 import Image from "next/image";
 import Input from "@/components/UI/Input";
 import Button from "@/components/UI/Button";
-import { searchBooks } from "../../../services/bookService"
+import { searchBooksAction } from "@/actions/bookAction"
 import { Book } from "@/types/bookTypes"
 import Link from "next/link";
 
@@ -30,7 +30,7 @@ export default function ClientHomePage() {
         setError(null); //clean previus error
 
         try {
-            const books = await searchBooks(query); //call to service (Now Mock)
+            const books = await searchBooksAction(query); //call to service (Now Mock)
             setResults(books); //results saved in state
             setHasSearched(true) //indicates a search has been succesfully done
         }
