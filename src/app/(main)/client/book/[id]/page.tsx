@@ -1,4 +1,4 @@
-import { getBookDetails } from '@/services/bookService';
+import { getBookDetailsAction } from '@/actions/bookAction';
 import BookActions from '@/components/book/bookAction';
 import Image from "next/image";
 
@@ -7,7 +7,7 @@ export default async function BookDetailsPage(
         params: Promise<{ id: string }>;
     }) {
     const { id } = await params;
-    const book = await getBookDetails(id)
+    const book = await getBookDetailsAction(id)
     return (
         <main className='p-6'>
             <div>
