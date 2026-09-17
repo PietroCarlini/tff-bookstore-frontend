@@ -32,7 +32,7 @@ export default async function OrdersPage() {
                                     {item.cover_url ? (
                                         <Image src={item.cover_url} alt={item.title} width={48} height={72} className="rounded" />
                                     ) : (
-                                        <div className="h-[72px] w-12 rounded bg-carbon/10" />
+                                        <div className="h-72px w-12 rounded bg-carbon/10" />
                                     )}
                                     <div>
                                         <p className="font-sans text-sm text-carbon">{item.title}</p>
