@@ -9,13 +9,13 @@ export async function getCatalogue(token: string, search?: string): Promise<Book
         : `${API_URL}/catalogue`;
 
     const res = await fetch(url, {
-        headers: { Authorization: `Baerer ${token}` },
+        headers: { Authorization: `Bearer ${token}` },
         cache: 'no-store'
     })
 
     if (!res.ok) {
         throw new Error("Failed to load catalogue");
     }
-    const data = res.json();
-    return data
+    const data = await res.json();
+    return data.books
 }
