@@ -5,12 +5,15 @@ import Input from "@/components/UI/Input";
 import Button from "@/components/UI/Button";
 import { getMyCatalogueAction } from "@/actions/catalogueAction";
 import { BookStocked } from "@/types/bookshopTypes";
+import Modal from "@/components/UI/Modal";
+import BookForm from "@/components/catalogue/BookForm";
 
 export default function CataloguePage() {
     const [query, setQuery] = useState('');
     const [books, setBooks] = useState<BookStocked[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [modalMode, setModalMode] = useState<"add" | null>(null); // null = modal closedf, "add" = modal open in add stance
 
     //expanded row to view details (managed by ID):
     const [expandedId, setExpandedId] = useState<number | null>(null);
@@ -62,6 +65,8 @@ export default function CataloguePage() {
                 />
                 <Button type="submit">Search</Button>
             </form>
+
+            <Button onClick={() => setModalMode("add")}>Add book</Button>
 
             {loading && <p className="mt-4 text-carbon">Loading...</p>}
             {error && <p className="mt-4 text-red-600">{error}</p>}
@@ -121,6 +126,17 @@ export default function CataloguePage() {
                         ))}
                     </ul>
                 </div>
+            )}
+
+            {modalMode === "add" && (
+                <Modal onClose={() => setModalMode(null)}>
+                    <BookForm
+                        onSuccess={() => {
+                            setModalMode(null); //close modal component
+                            fetchCatalogue(); //re-fetch entire catalogue updated
+                        }}
+                    />
+                </Modal>
             )}
         </main>
     );

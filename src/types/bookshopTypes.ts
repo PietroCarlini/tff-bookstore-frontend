@@ -8,6 +8,7 @@ export interface Bookshop {
     openingHours: string | null;
 }
 
+//Catalogue
 export interface BookStocked {
     id: number;
     ISBN: string;
@@ -19,4 +20,17 @@ export interface BookStocked {
     stock: number;
     cover_url: string | null;
     tag: string | null;
+}
+
+//Insert new book in catalogue
+export interface NewBookData {
+    ISBN: string;
+    title: string;
+    author: string;
+    genere: string;
+    publisher?: string;
+    tag?: string;
+    price: number;
+    stock: number;
+    cover_url?: string;
 }
