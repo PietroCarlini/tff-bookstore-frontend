@@ -15,9 +15,9 @@ async function getToken(): Promise<string>{
     return token
 }
 
-export async function getMyCatalogueAction(search?: string) : Promise<BookStocked[]> {
+export async function getMyCatalogueAction(search?: string, sortBy?: string, sortDir?: string) : Promise<BookStocked[]> {
     const token = await getToken();
-    return getCatalogue(token, search)
+    return getCatalogue(token, search, sortBy, sortDir)
 }
 
 

@@ -1,17 +1,27 @@
 import { BookStocked, NewBookData } from '@/types/bookshopTypes';
+import { log } from 'console';
 
 const API_URL = process.env.API_URL;
 
 // bookshop retrieves its own catalogue, optionally filtered by search
-export async function getCatalogue(token: string, search?: string): Promise<BookStocked[]> {
-    const url = search
-        ? `${API_URL}/catalogue?search=${encodeURIComponent(search)}`
-        : `${API_URL}/catalogue`;
+export async function getCatalogue(token: string, search?: string, sortBy?: string, sortDir?: string): Promise<BookStocked[]> {
 
+    const params = new URLSearchParams(); //it's an obj
+    if(search) params.set('search', search);
+    if(sortBy) params.set('sortBy', sortBy);
+    if(sortDir) params.set('sortDir', sortDir)
+
+    let url = `${API_URL}/catalogue`;
+    
+    //we check, if the obj not emptu, we add the query with params
+    if(params.toString() !== ''){
+        url = `${API_URL}/catalogue?${params.toString()}`   
+    }
+    // console.log(url);
     const res = await fetch(url, {
         headers: { Authorization: `Bearer ${token}` },
         cache: 'no-store'
-    })
+    },)
 
     if (!res.ok) {
         throw new Error("Failed to load catalogue");

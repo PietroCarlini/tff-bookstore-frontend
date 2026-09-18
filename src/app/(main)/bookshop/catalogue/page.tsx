@@ -8,6 +8,7 @@ import { BookStocked } from "@/types/bookshopTypes";
 import Modal from "@/components/UI/Modal";
 import BookForm from "@/components/catalogue/BookForm";
 
+
 export default function CataloguePage() {
     const [query, setQuery] = useState('');
     const [books, setBooks] = useState<BookStocked[]>([]);
@@ -15,6 +16,8 @@ export default function CataloguePage() {
     const [error, setError] = useState<string | null>(null);
     const [modalMode, setModalMode] = useState<"add" | "edit" | null>(null); // null = modal closedf, "add" = modal open in add stance
     const [bookToEdit, setBookToEdit] = useState<BookStocked | null>(null);
+    const [sortBy, setSortBy] = useState<string | null>(null);
+    const [sortDir, setSortDir] = useState<"ASC" | "DESC">("ASC");
 
     //expanded row to view details (managed by ID):
     const [expandedId, setExpandedId] = useState<number | null>(null);
@@ -24,11 +27,9 @@ export default function CataloguePage() {
         setLoading(true);
         setError(null);
         try {
-            const data = await getMyCatalogueAction(search);
-            console.log("data ricevuta:", data);
+            const data = await getMyCatalogueAction(search, sortBy ?? undefined, sortDir);
             setBooks(data);
         } catch (err) {
-            console.log("errore catturato:", err);
             setError('An error occurred while loading the catalogue');
         } finally {
             setLoading(false); //finally always run after either a try or a catch
@@ -36,13 +37,25 @@ export default function CataloguePage() {
     }
 
     // on first render, load the full catalogue (no search filter)
+    // re-run whenever sortBy/sortDir change (also covers first render, since they start with a value)
     useEffect(() => {
-        fetchCatalogue();
-    }, [])
+        fetchCatalogue(query || undefined);
+    }, [sortBy, sortDir])
 
     async function handleSearch(e: React.FormEvent) {
         e.preventDefault();
         fetchCatalogue(query || undefined) //if search is clicked with no text (undefined), recharge all catalogue 
+    }
+
+    function handleSort(field: string) {
+        if (sortBy === field) {
+            // same column clicked again → invert direction
+            setSortDir((current) => (current === "ASC" ? "DESC" : "ASC"));
+        } else {
+            // different column → switch to it, default ASC
+            setSortBy(field);
+            setSortDir("ASC");
+        }
     }
 
     function toggleRow(id: number) {
@@ -80,9 +93,24 @@ export default function CataloguePage() {
                     {/* header row */}
                     <div role="row" className={`${columns} border-b border-carbon/20 py-2 font-medium`}>
                         <span role="columnheader">ISBN</span>
-                        <span role="columnheader">Title</span>
-                        <span role="columnheader">Author</span>
-                        <span role="columnheader">Publisher</span>
+                        {/*tittle filter */}
+                        <span role="columnheader">
+                            <button onClick={() => handleSort("title")} className="hover:underline">
+                                Title {sortBy === "title" && (sortDir === "ASC" ? "↑" : "↓")}
+                            </button>
+                        </span>
+                        {/*auhtor filter */}
+                        <span role="columnheader">
+                            <button onClick={() => handleSort("author")} className="hover:underline">
+                                Author {sortBy === "author" && (sortDir === "ASC" ? "↑" : "↓")}
+                            </button>
+                        </span>
+                        {/* publisher filter */}
+                        <span role="columnheader">
+                            <button onClick={() => handleSort("publisher")} className="hover:underline">
+                                Publisher {sortBy === "publisher" && (sortDir === "ASC" ? "↑" : "↓")}
+                            </button>
+                        </span>
                         <span role="columnheader">Stock</span>
                         <span role="columnheader">Price</span>
                     </div>
