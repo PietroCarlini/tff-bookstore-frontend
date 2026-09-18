@@ -3,7 +3,7 @@
 import { useState, useEffect, Fragment } from "react";
 import Input from "@/components/UI/Input";
 import Button from "@/components/UI/Button";
-import { getMyCatalogueAction } from "@/actions/catalogueAction";
+import { deleteBookAction, getMyCatalogueAction } from "@/actions/catalogueAction";
 import { BookStocked } from "@/types/bookshopTypes";
 import Modal from "@/components/UI/Modal";
 import BookForm from "@/components/catalogue/BookForm";
@@ -13,7 +13,8 @@ export default function CataloguePage() {
     const [books, setBooks] = useState<BookStocked[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [modalMode, setModalMode] = useState<"add" | null>(null); // null = modal closedf, "add" = modal open in add stance
+    const [modalMode, setModalMode] = useState<"add" | "edit" | null>(null); // null = modal closedf, "add" = modal open in add stance
+    const [bookToEdit, setBookToEdit] = useState<BookStocked | null>(null);
 
     //expanded row to view details (managed by ID):
     const [expandedId, setExpandedId] = useState<number | null>(null);
@@ -102,6 +103,7 @@ export default function CataloguePage() {
                                     <span role="cell">{book.price}</span>
                                 </li>
 
+                                {/*DETAILS ROW */}
                                 {expandedId === book.id && (
                                     <li role="row" className="border-b border-carbon/10 bg-carbon/5 py-3">
                                         <div className="flex gap-6">
@@ -118,6 +120,32 @@ export default function CataloguePage() {
                                             <div>
                                                 <p><span className="font-medium">Genre:</span> {book.genere}</p>
                                                 <p><span className="font-medium">Tag:</span> {book.tag ?? "-"}</p>
+
+                                                <Button
+                                                    onClick={() => {
+                                                        setBookToEdit(book);
+                                                        setModalMode("edit");
+                                                    }}
+                                                >
+                                                    Edit
+                                                </Button>
+
+                                                <Button
+                                                    onClick={async () => {
+                                                        const confirmed = window.confirm(`Delete "${book.title}"?`);
+                                                        if (!confirmed) return;
+
+                                                        const outcome = await deleteBookAction(book.id);
+                                                        if (outcome.success) {
+                                                            fetchCatalogue();
+                                                        } else {
+                                                            setError(outcome.message);
+                                                        }
+                                                    }}
+                                                >
+                                                    Delete
+                                                </Button>
+
                                             </div>
                                         </div>
                                     </li>
@@ -138,6 +166,19 @@ export default function CataloguePage() {
                     />
                 </Modal>
             )}
+            {modalMode === "edit" && bookToEdit && (
+                <Modal onClose={() => { setModalMode(null); setBookToEdit(null); }}>
+                    <BookForm
+                        initialData={bookToEdit}
+                        onSuccess={() => {
+                            setModalMode(null);
+                            setBookToEdit(null);
+                            fetchCatalogue();
+                        }}
+                    />
+                </Modal>
+            )}
+
         </main>
     );
 }
