@@ -2,8 +2,8 @@
 
 import { cookies } from "next/headers";
 import { getBookshops } from "@/services/bookshopService";
-import { createOrder, getMyOrders } from "@/services/orderService";
-import { Order } from "@/types/orderTypes";
+import { createOrder, getMyOrders, getBookshopOrders, updateOrderStatus } from "@/services/orderService";
+import { Order, BookshopOrder, OrderStatus } from "@/types/orderTypes";
 import { Bookshop } from "@/types/bookshopTypes";
 import { NewOrderData } from "@/types/orderTypes";
 
@@ -41,4 +41,25 @@ export async function createOrderAction(data: NewOrderData): Promise<CreateOrder
 export async function getMyOrdersAction(): Promise<Order[]> {
     const token = await getToken();
     return getMyOrders(token)
+}
+
+export async function getBookshopOrdersAction(search?:string): Promise<BookshopOrder[]> {
+    const token = await getToken();
+    return getBookshopOrders(token, search)
+}
+
+type UpdateOrderStatusResult = { success: true } | { success: false; message: string };
+
+export async function updateOrderStatusAction(id: number, state: OrderStatus) : Promise<UpdateOrderStatusResult> {
+    try{
+        const token = await getToken();
+        await updateOrderStatus(id, state, token);
+        return {success : true}
+    }
+    catch(error) {
+        return {
+            success: false,
+            message: error instanceof Error ? error.message : 'Failed to update order status'
+        }
+    }
 }
