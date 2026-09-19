@@ -26,6 +26,9 @@ export interface OrderBookshop {
     name: string;
     city: string;
     address: string;
+    phone: string;
+    email: string;
+    openingHours: string | null;
 }
 
 // order as seen by the client: it includes the bookshop (GET /orders/mine)
