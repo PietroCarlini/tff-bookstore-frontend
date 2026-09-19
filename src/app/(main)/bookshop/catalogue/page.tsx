@@ -3,6 +3,17 @@
 import { useState, useEffect, Fragment } from "react";
 import Input from "@/components/UI/Input";
 import Button from "@/components/UI/Button";
+import { deleteBookAction, getMyCatalogueAction } from "@/actions/catalogueAction";
+import { BookStocked } from "@/types/bookshopTypes";
+import Modal from "@/components/UI/Modal";
+import BookForm from "@/components/catalogue/BookForm";
+
+
+"use client";
+
+import { useState, useEffect, Fragment } from "react";
+import Input from "@/components/UI/Input";
+import Button from "@/components/UI/Button";
 import { getMyCatalogueAction } from "@/actions/catalogueAction";
 import { BookStocked } from "@/types/bookshopTypes";
 
@@ -11,6 +22,10 @@ export default function CataloguePage() {
     const [books, setBooks] = useState<BookStocked[]>([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [modalMode, setModalMode] = useState<"add" | "edit" | null>(null); // null = modal closedf, "add" = modal open in add stance
+    const [bookToEdit, setBookToEdit] = useState<BookStocked | null>(null);
+    const [sortBy, setSortBy] = useState<string | null>(null);
+    const [sortDir, setSortDir] = useState<"ASC" | "DESC">("ASC");
 
     //expanded row to view details (managed by ID):
     const [expandedId, setExpandedId] = useState<number | null>(null);
@@ -20,7 +35,7 @@ export default function CataloguePage() {
         setLoading(true);
         setError(null);
         try {
-            const data = await getMyCatalogueAction(search);
+            const data = await getMyCatalogueAction(search, sortBy ?? undefined, sortDir);
             setBooks(data);
         } catch (err) {
             setError('An error occurred while loading the catalogue');
@@ -30,19 +45,34 @@ export default function CataloguePage() {
     }
 
     // on first render, load the full catalogue (no search filter)
+    // re-run whenever sortBy/sortDir change (also covers first render, since they start with a value)
     useEffect(() => {
-        fetchCatalogue();
-    }, [])
+        fetchCatalogue(query || undefined);
+    }, [sortBy, sortDir])
 
     async function handleSearch(e: React.FormEvent) {
         e.preventDefault();
         fetchCatalogue(query || undefined) //if search is clicked with no text (undefined), recharge all catalogue 
     }
 
+    function handleSort(field: string) {
+        if (sortBy === field) {
+            // same column clicked again → invert direction
+            setSortDir((current) => (current === "ASC" ? "DESC" : "ASC"));
+        } else {
+            // different column → switch to it, default ASC
+            setSortBy(field);
+            setSortDir("ASC");
+        }
+    }
+
     function toggleRow(id: number) {
         //if click on same row => id = null => closing row. Otherwise open another (new id)
         setExpandedId((current) => (current === id ? null : id))
     }
+
+    // shared column Tailwinds layout for header + rows, so labels and values always line up
+    const columns = "grid grid-cols-6 gap-2";
 
     return (
         <main className="p-6">
@@ -58,6 +88,8 @@ export default function CataloguePage() {
                 <Button type="submit">Search</Button>
             </form>
 
+            <Button onClick={() => setModalMode("add")}>Add book</Button>
+
             {loading && <p className="mt-4 text-carbon">Loading...</p>}
             {error && <p className="mt-4 text-red-600">{error}</p>}
             {!loading && !error && books.length === 0 && (
@@ -65,59 +97,124 @@ export default function CataloguePage() {
             )}
 
             {books.length > 0 && (
-                <table className="mt-6 w-full text-left font-sans text-sm text-carbon">
-                    <thead>
-                        <tr className="border-b border-carbon/20">
-                            <th className="py-2">ISBN</th>
-                            <th className="py-2">Title</th>
-                            <th className="py-2">Author</th>
-                            <th className="py-2">Publisher</th>
-                            <th className="py-2">Stock</th>
-                            <th className="py-2">Price</th>
-                        </tr>
-                    </thead>
-                    <tbody>
+                <div role="table" aria-label="Catalogue" className="mt-6 font-sans text-sm text-carbon">
+                    {/* header row */}
+                    <div role="row" className={`${columns} border-b border-carbon/20 py-2 font-medium`}>
+                        <span role="columnheader">ISBN</span>
+                        {/*tittle filter */}
+                        <span role="columnheader">
+                            <button onClick={() => handleSort("title")} className="hover:underline">
+                                Title {sortBy === "title" && (sortDir === "ASC" ? "↑" : "↓")}
+                            </button>
+                        </span>
+                        {/*auhtor filter */}
+                        <span role="columnheader">
+                            <button onClick={() => handleSort("author")} className="hover:underline">
+                                Author {sortBy === "author" && (sortDir === "ASC" ? "↑" : "↓")}
+                            </button>
+                        </span>
+                        {/* publisher filter */}
+                        <span role="columnheader">
+                            <button onClick={() => handleSort("publisher")} className="hover:underline">
+                                Publisher {sortBy === "publisher" && (sortDir === "ASC" ? "↑" : "↓")}
+                            </button>
+                        </span>
+                        <span role="columnheader">Stock</span>
+                        <span role="columnheader">Price</span>
+                    </div>
+
+                    <ul>
                         {books.map((book) => (
                             <Fragment key={book.id}>
-                                <tr
+                                <li
+                                    role="row"
                                     onClick={() => toggleRow(book.id)}
-                                    className="cursor-pointer border-b border-carbon/10 hover:bg-carbon/5"
+                                    className={`${columns} cursor-pointer border-b border-carbon/10 py-2 hover:bg-carbon/5`}
                                 >
-                                    <td className="py-2">{book.ISBN}</td>
-                                    <td className="py-2">{book.title}</td>
-                                    <td className="py-2">{book.author}</td>
-                                    <td className="py-2">{book.publisher ?? "-"}</td>
-                                    <td className="py-2">{book.stock}</td>
-                                    <td className="py-2">{book.price}</td>
-                                </tr>
+                                    <span role="cell">{book.ISBN}</span>
+                                    <span role="cell">{book.title}</span>
+                                    <span role="cell">{book.author}</span>
+                                    <span role="cell">{book.publisher ?? "-"}</span>
+                                    <span role="cell">{book.stock}</span>
+                                    <span role="cell">{book.price}</span>
+                                </li>
 
+                                {/*DETAILS ROW */}
                                 {expandedId === book.id && (
-                                    <tr className="border-b border-carbon/10 bg-carbon/5">
-                                        <td colSpan={6} className="py-3">
-                                            <div className="flex gap-6">
-                                                {book.cover_url ? (
-                                                    // eslint-disable-next-line @next/next/no-img-element
-                                                    <img
-                                                        src={book.cover_url}
-                                                        alt={book.title}
-                                                        className="h-32 w-20 rounded object-cover"
-                                                    />
-                                                ) : (
-                                                    <div className="h-32 w-20 rounded bg-carbon/10" />
-                                                )}
-                                                <div>
-                                                    <p><span className="font-medium">Genre:</span> {book.genere}</p>
-                                                    <p><span className="font-medium">Tag:</span> {book.tag ?? "-"}</p>
-                                                </div>
+                                    <li role="row" className="border-b border-carbon/10 bg-carbon/5 py-3">
+                                        <div className="flex gap-6">
+                                            {book.cover_url ? (
+                                                // eslint-disable-next-line @next/next/no-img-element
+                                                <img
+                                                    src={book.cover_url}
+                                                    alt={book.title}
+                                                    className="h-32 w-20 rounded object-cover"
+                                                />
+                                            ) : (
+                                                <div className="h-32 w-20 rounded bg-carbon/10" />
+                                            )}
+                                            <div>
+                                                <p><span className="font-medium">Genre:</span> {book.genere}</p>
+                                                <p><span className="font-medium">Tag:</span> {book.tag ?? "-"}</p>
+
+                                                <Button
+                                                    onClick={() => {
+                                                        setBookToEdit(book);
+                                                        setModalMode("edit");
+                                                    }}
+                                                >
+                                                    Edit
+                                                </Button>
+
+                                                <Button
+                                                    onClick={async () => {
+                                                        const confirmed = window.confirm(`Delete "${book.title}"?`);
+                                                        if (!confirmed) return;
+
+                                                        const outcome = await deleteBookAction(book.id);
+                                                        if (outcome.success) {
+                                                            fetchCatalogue();
+                                                        } else {
+                                                            setError(outcome.message);
+                                                        }
+                                                    }}
+                                                >
+                                                    Delete
+                                                </Button>
+
                                             </div>
-                                        </td>
-                                    </tr>
+                                        </div>
+                                    </li>
                                 )}
                             </Fragment>
                         ))}
-                    </tbody>
-                </table>
+                    </ul>
+                </div>
             )}
+
+            {modalMode === "add" && (
+                <Modal onClose={() => setModalMode(null)}>
+                    <BookForm
+                        onSuccess={() => {
+                            setModalMode(null); //close modal component
+                            fetchCatalogue(); //re-fetch entire catalogue updated
+                        }}
+                    />
+                </Modal>
+            )}
+            {modalMode === "edit" && bookToEdit && (
+                <Modal onClose={() => { setModalMode(null); setBookToEdit(null); }}>
+                    <BookForm
+                        initialData={bookToEdit}
+                        onSuccess={() => {
+                            setModalMode(null);
+                            setBookToEdit(null);
+                            fetchCatalogue();
+                        }}
+                    />
+                </Modal>
+            )}
+
         </main>
     );
 }
