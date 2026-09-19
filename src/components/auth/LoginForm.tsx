@@ -59,6 +59,9 @@ export default function LoginForm() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
             />
+            <Link href="/forgot-password" className="self-end text-sm text-stormy-teal underline">
+                Forgot your password?
+            </Link>
             {error && <p className="text-sm text-red-600">{error}</p>}
             <Button type="submit" disabled={isLoading}>
                 {isLoading ? "Logging in..." : "Log in"}

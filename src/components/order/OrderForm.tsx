@@ -79,12 +79,29 @@ export default function OrderForm({ book, bookshops }: OrderFormProps) {
                 </select>
             </div>
 
-            {selectedBookshop && (
-                <div className="rounded border border-carbon/10 bg-alabaster p-3 font-sans text-sm text-carbon">
-                    <p>{selectedBookshop.address}, {selectedBookshop.city}</p>
-                    {selectedBookshop.openingHours && <p className="mt-1 text-carbon/70">{selectedBookshop.openingHours}</p>}
-                </div>
-            )}
+            {/* the live region is always in the page: screen readers announce the details when a bookshop is selected */}
+            <div aria-live="polite" className="empty:hidden">
+                {selectedBookshop && (
+                    <div className="rounded border border-carbon/10 bg-alabaster p-3 font-sans text-sm text-carbon">
+                        <p>{selectedBookshop.address}, {selectedBookshop.city}</p>
+                        <p className="mt-1">
+                            <a href={`tel:${selectedBookshop.phone}`} className="text-stormy-teal underline">
+                                {selectedBookshop.phone}
+                            </a>
+                        </p>
+                        <p className="mt-1">
+                            <a href={`mailto:${selectedBookshop.email}`} className="text-stormy-teal underline">
+                                {selectedBookshop.email}
+                            </a>
+                        </p>
+                        {selectedBookshop.openingHours && (
+                            <p className="mt-1 text-carbon/70">
+                                <span className="font-medium">Opening hours:</span> {selectedBookshop.openingHours}
+                            </p>
+                        )}
+                    </div>
+                )}
+            </div>
 
             <div className="flex flex-col gap-1">
                 <label htmlFor="message" className="text-sm font-sans text-carbon">
