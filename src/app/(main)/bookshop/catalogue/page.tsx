@@ -9,14 +9,6 @@ import Modal from "@/components/UI/Modal";
 import BookForm from "@/components/catalogue/BookForm";
 
 
-"use client";
-
-import { useState, useEffect, Fragment } from "react";
-import Input from "@/components/UI/Input";
-import Button from "@/components/UI/Button";
-import { getMyCatalogueAction } from "@/actions/catalogueAction";
-import { BookStocked } from "@/types/bookshopTypes";
-
 export default function CataloguePage() {
     const [query, setQuery] = useState('');
     const [books, setBooks] = useState<BookStocked[]>([]);
