@@ -77,3 +77,20 @@ export async function updateOrderStatus(id: number, state: OrderStatus, token: s
         throw new Error(errorData?.message || 'Failed to update order status') //if no JSON, default message
     }
 }
+
+// bookshop sets the price of an order (PATCH sends only the field that changes)
+export async function updateOrderPrice(id: number, price: number, token: string): Promise<void> {
+    const res = await fetch(`${API_URL}/orders/${id}`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify({ price }),
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        throw new Error(errorData?.message || "Failed to update order price");
+    }
+}

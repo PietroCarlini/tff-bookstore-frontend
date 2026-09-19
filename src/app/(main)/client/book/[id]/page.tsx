@@ -8,6 +8,10 @@ export default async function BookDetailsPage(
     }) {
     const { id } = await params;
     const book = await getBookDetailsAction(id)
+
+    // authors is always an array (maybe empty): fallback text if the author is unknown
+    const authors = book.authors.join(", ") || "Unknown author";
+
     return (
         <main className='p-6'>
             <div>
@@ -26,7 +30,7 @@ export default async function BookDetailsPage(
                     {book.title}
                 </p>
                 <p className="font-sans text-xs text-carbon/70">
-                    {book.authors.join(", ")}
+                    {authors}
                 </p>
                 <p className="font-sans text-sm font-medium text-carbon">
                     {book.isbn}
@@ -40,7 +44,7 @@ export default async function BookDetailsPage(
                 <p className="font-sans text-sm font-medium text-carbon">
                     {book.description}
                 </p>
-                <BookActions isbn={book.isbn} title={book.title} author={book.authors.join(", ")} cover={book.cover} />
+                <BookActions isbn={book.isbn} title={book.title} author={authors} cover={book.cover} />
             </div >
         </main>
     )

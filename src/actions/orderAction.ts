@@ -2,7 +2,7 @@
 
 import { cookies } from "next/headers";
 import { getBookshops } from "@/services/bookshopService";
-import { createOrder, getMyOrders, getBookshopOrders, updateOrderStatus } from "@/services/orderService";
+import { createOrder, getMyOrders, getBookshopOrders, updateOrderStatus, updateOrderPrice } from "@/services/orderService";
 import { Order, BookshopOrder, OrderStatus } from "@/types/orderTypes";
 import { Bookshop } from "@/types/bookshopTypes";
 import { NewOrderData } from "@/types/orderTypes";
@@ -60,6 +60,22 @@ export async function updateOrderStatusAction(id: number, state: OrderStatus) : 
         return {
             success: false,
             message: error instanceof Error ? error.message : 'Failed to update order status'
+        }
+    }
+}
+
+type UpdateOrderPriceResult = { success: true } | { success: false; message: string };
+
+export async function updateOrderPriceAction(id: number, price: number): Promise<UpdateOrderPriceResult> {
+    try {
+        const token = await getToken();
+        await updateOrderPrice(id, price, token);
+        return { success: true }
+    }
+    catch (error) {
+        return {
+            success: false,
+            message: error instanceof Error ? error.message : 'Failed to update order price',
         }
     }
 }

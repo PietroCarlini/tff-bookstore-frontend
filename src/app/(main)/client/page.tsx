@@ -24,7 +24,7 @@ export default function ClientHomePage() {
     async function handleSearch(e: React.FormEvent) {
         e.preventDefault();
 
-        if(!query.trim()) return; //If the field is empty or contains only spaces, no search
+        if (!query.trim()) return; //If the field is empty or contains only spaces, no search
 
         setLoading(true); //indicates that the research has begun
         setError(null); //clean previus error
@@ -85,7 +85,7 @@ export default function ClientHomePage() {
                             {book.cover ? (
                                 <Image
                                     src={book.cover}
-                        
+
                                     alt={book.title}
                                     width={128}
                                     height={192}
@@ -100,7 +100,7 @@ export default function ClientHomePage() {
                             {/* authors is an array of strings: .join(", ") turns it into
                                 "Author1, Author2" instead of showing the raw array */}
                             <p className="font-sans text-xs text-carbon/70">
-                                {book.authors.join(", ")}
+                                {book.authors.join(", ") || "Unknown author"}
                             </p>
                         </li>
                     </Link>

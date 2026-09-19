@@ -2,6 +2,7 @@
 
 import { useState, useEffect } from "react";
 import { getBookshopOrdersAction } from "@/actions/orderAction";
+import OrderPriceInput from "@/components/order/OrderPriceInput";
 import { BookshopOrder } from "@/types/orderTypes";
 import OrderStatusSelect from "@/components/order/OrderStatusSelect";
 import Input from "@/components/UI/Input";
@@ -96,7 +97,13 @@ export default function BookshopOrdersPage() {
                                         />
                                     </span>
                                     <span role="cell">{new Date(order.createdAt).toLocaleDateString()}</span>
-                                    <span role="cell">{item.price ?? "-"}</span>
+                                    <span role="cell">
+                                        <OrderPriceInput
+                                            orderId={order.id}
+                                            price={item.price}
+                                            onChanged={() => fetchOrders(query || undefined)} // keep the current search after a PATCH
+                                        />
+                                    </span>
                                     <span role="cell">{new Date(order.updatedAt).toLocaleDateString()}</span>
                                 </li>
                             );

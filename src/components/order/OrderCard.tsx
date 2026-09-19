@@ -84,6 +84,9 @@ export default function OrderCard({ order }: OrderCardProps) {
                         <div>
                             <p className="font-sans text-sm text-carbon">{item.title}</p>
                             <p className="font-sans text-xs text-carbon/70">{item.author}</p>
+                            {item.price && (
+                                <p className="font-sans text-xs text-carbon">Price: €{item.price}</p>
+                            )}
                         </div>
                     </li>
                 ))}
