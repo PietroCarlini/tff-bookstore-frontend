@@ -8,6 +8,9 @@ export interface Bookshop {
     openingHours: string | null;
 }
 
+// fields a bookshop can edit in its profile: id is never editable, all the others are optional (like the backend validator)
+export type UpdateBookshopData = Partial<Omit<Bookshop, "id">>;
+
 //Catalogue
 export interface BookStocked {
     id: number;
@@ -34,3 +37,4 @@ export interface NewBookData {
     stock: number;
     cover_url?: string;
 }
+

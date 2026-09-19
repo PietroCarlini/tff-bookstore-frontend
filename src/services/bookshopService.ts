@@ -1,4 +1,4 @@
-import { Bookshop } from "@/types/bookshopTypes";
+import { Bookshop, UpdateBookshopData } from "@/types/bookshopTypes";
 
 const API_URL = process.env.API_URL;
 
@@ -28,4 +28,24 @@ export async function getMyBookshop(token: string): Promise<Bookshop> {
 
     const data = await res.json();
     return data.bookshop;
+}
+
+// bookshop updates its own data: the backend answers with the updated bookshop
+export async function updateMyBookshop(data: UpdateBookshopData, token: string): Promise<Bookshop> {
+    const res = await fetch(`${API_URL}/bookshops/me`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        throw new Error(errorData?.message || "Failed to update profile");
+    }
+
+    const result = await res.json();
+    return result.bookshop;
 }
