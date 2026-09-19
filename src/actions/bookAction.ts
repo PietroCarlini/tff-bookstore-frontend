@@ -10,3 +10,4 @@ export async function searchBooksAction(query: string): Promise<Book[]> {
 export async function getBookDetailsAction(id: string): Promise<BookDetails> {
     return getBookDetails(id);
 }
+
