@@ -1,6 +1,7 @@
 import Image from "next/image";
 import { getListAction } from "@/actions/listsAction";
 import RemoveButton from "@/components/lists/RemoveButton";
+import MarkAsReadButton from "@/components/lists/MarkAsReadButton";
 
 export default async function ToReadPage() {
     const items = await getListAction("to-read");
@@ -24,7 +25,10 @@ export default async function ToReadPage() {
                         <div className="flex flex-col gap-2">
                             <p className="font-sans text-sm font-medium text-carbon">{item.title}</p>
                             <p className="font-sans text-xs text-carbon/70">{item.author}</p>
-                            <RemoveButton type="to-read" isbn={item.ISBN} />
+                            <div className="flex flex-wrap items-start gap-2">
+                                <MarkAsReadButton item={item} />
+                                <RemoveButton type="to-read" isbn={item.ISBN} />
+                            </div>F
                         </div>
                     </li>
                 ))}

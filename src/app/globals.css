@@ -6,6 +6,17 @@
   --color-seaweed: #49a078;
   --color-muted-teal: #9cc5a1;
   --color-alabaster: #dce1de;
+  /* order status colours: background tint + border (the text is always carbon) */
+  --color-status-sent: #ffffff;
+  --color-status-sent-border: #8a948e;
+  --color-status-progress: #f8d38a;
+  --color-status-progress-border: #d9a441;
+  --color-status-ready: #bfe3cb;
+  --color-status-ready-border: #49a078;
+  --color-status-collected: #bfd7f0;
+  --color-status-collected-border: #5b8dc0;
+  --color-status-canceled: #f4c3c0;
+  --color-status-canceled-border: #c0524b;
 
   --font-sans: var(--font-inter);
   --font-heading: var(--font-fraunces);

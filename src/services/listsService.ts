@@ -1,4 +1,4 @@
-import { ListItem } from "@/types/listsTypes";
+import { ListItem, NewListItem } from "@/types/listsTypes";
 
 const API_URL = process.env.API_URL;
 
@@ -6,6 +6,9 @@ const API_URL = process.env.API_URL;
 export type ListType = 'to-read' | 'read';
 
 //link between Front/Back: endPointFor is an object(created by Record, ts utility[key,value]) string type; URL FRONT:.../my-lists/to-read -> equals BACK route: 'toread'
+// link between Front/Back: endPointFor is an object (created by Record, a TS utility [key, value]) with string values
+// URL FRONT: .../my-lists/to-read -> BACK route: 'toread' ('read' is the same on both sides)
+// it is the only place that knows the backend route names: getListItems, removeListItem and addListItem all use endPointFor[type] => if a route changes on the backend obly one line here need to be edit and nothing else
 const endPointFor: Record<ListType, string> = {
     'to-read': 'toread',
     'read': 'read'
@@ -21,6 +24,22 @@ export async function getListItems(type: ListType, token: string): Promise<ListI
     }
     const data = await res.json();
     return data.books;
+}
+
+export async function addListItem(type: ListType, book: NewListItem, token: string): Promise<void> {
+    const res = await fetch(`${API_URL}/${endPointFor[type]}`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(book),
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        throw new Error(errorData?.message || 'Failed to add book to the list');
+    }
 }
 
 export async function removeListItem(type: ListType, isbn: string, token: string): Promise<void> {

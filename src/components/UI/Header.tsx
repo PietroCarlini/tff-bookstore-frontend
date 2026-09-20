@@ -4,7 +4,11 @@ import { useState } from "react";
 import Link from "next/link";
 import BurgerMenu from "./BurgerMenu";
 
-export default function Header() {
+interface HeaderProps {
+    initial: string; // first letter of the logged user, computed by the layout (server side)
+}
+
+export default function Header({ initial }: HeaderProps) {
     const [menuOpen, setMenuOpen] = useState(false);
 
     return (
@@ -41,9 +45,9 @@ export default function Header() {
                     <Link
                         href="/client/profile"
                         aria-label="Profile"
-                        className="flex h-38px w-38px items-center justify-center rounded-full bg-white font-heading text-sm text-stormy-teal focus:outline-none focus:ring-2 focus:ring-white"
+                        className="flex size-[38px] shrink-0 items-center justify-center rounded-full bg-white font-heading text-sm text-stormy-teal focus:outline-none focus:ring-2 focus:ring-white"
                     >
-                        P
+                        {initial}
                     </Link>
                 </div>
             </div>

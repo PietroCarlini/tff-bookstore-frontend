@@ -76,7 +76,7 @@ export default function RegistrationForm() {
             />
             <Input
                 id="confirmPassword"
-                label="ConfirmPassword"
+                label="Confirm Password"
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
@@ -84,13 +84,13 @@ export default function RegistrationForm() {
             />
     { error && <p className="text-sm text-red-600">{error}</p> }
             <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Signing up..." : "Signing up"}
+                {isLoading ? "Signing up..." : "Sign up"}
             </Button>
 
             <p className="text-sm text-carbon text-center">
-                Already an account?{" "}
+                Already have an account?{" "}
                 <Link href="/login" className="text-stormy-teal underline">
-                    Login in
+                    Log in
                 </Link>
             </p>
         </form >

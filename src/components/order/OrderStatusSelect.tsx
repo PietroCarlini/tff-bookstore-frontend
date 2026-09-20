@@ -3,6 +3,7 @@
 import { useState } from "react";
 import { updateOrderStatusAction } from "@/actions/orderAction";
 import { OrderStatus } from "@/types/orderTypes";
+import { statusColors } from "@/components/order/OrderStatusBadge";
 
 // value = what the backend expects (DB ENUM), label = what the user reads
 const options: { value: OrderStatus; label: string }[] = [
@@ -43,19 +44,32 @@ export default function OrderStatusSelect({ orderId, status, onChanged }: OrderS
 
     return (
         <div>
-            <select
-                aria-label={`Status of order ${orderId}`}
-                value={status} // controlled: always the value coming from the server
-                onChange={handleChange}
-                disabled={saving}
-                className="rounded border border-carbon/20 bg-white px-2 py-1 font-sans text-xs text-carbon"
-            >
-                {options.map((option) => (
-                    <option key={option.value} value={option.value}>
-                        {option.label}
-                    </option>
-                ))}
-            </select>
+            <div className="relative">
+                <select
+                    aria-label={`Status of order ${orderId}`}
+                    value={status} // controlled: always the value coming from the server
+                    onChange={handleChange}
+                    disabled={saving}
+                    className={`w-full appearance-none rounded-lg border py-1.5 pl-2.5 pr-8 font-sans text-xs font-semibold text-carbon focus:outline-none focus:ring-2 focus:ring-stormy-teal disabled:opacity-60 ${statusColors[status]}`}
+                >
+                    {options.map((option) => (
+                        <option key={option.value} value={option.value}>
+                            {option.label}
+                        </option>
+                    ))}
+                </select>
+                {/* custom arrow: appearance-none removes the native one; pointer-events-none lets the click reach the select */}
+                <svg
+                    className="pointer-events-none absolute right-2 top-1/2 -translate-y-1/2 text-carbon"
+                    width="14"
+                    height="14"
+                    viewBox="0 0 24 24"
+                    fill="none"
+                    aria-hidden="true"
+                >
+                    <path d="M6 9l6 6 6-6" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                </svg>
+            </div>
             {error && <p role="alert" className="mt-1 text-xs text-red-600">{error}</p>}
         </div>
     );

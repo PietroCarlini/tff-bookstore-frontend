@@ -24,7 +24,7 @@ export default async function ToReadPage() {
                         <div className="flex flex-col gap-2">
                             <p className="font-sans text-sm font-medium text-carbon">{item.title}</p>
                             <p className="font-sans text-xs text-carbon/70">{item.author}</p>
-                            <RemoveButton type="to-read" isbn={item.ISBN} />
+                            <RemoveButton type="read" isbn={item.ISBN} />
                         </div>
                     </li>
                 ))}
