@@ -9,6 +9,9 @@ interface ButtonProps {
     //* onClick optional because a button inside a form doesn't need it (form manages submit automatically)
     onClick?: () => void;
     disabled?: boolean;
+    //* only for toggle buttons (e.g. "To read"): true = pressed, false = not pressed; screen readers announce it
+    //* if it is not passed, no aria-pressed attribute is rendered (normal buttons)
+    ariaPressed?: boolean;
     //* optional extra classes chosen by who uses the button (e.g. width: "w-full", "flex-1")
     className?: string;
 }
@@ -27,16 +30,19 @@ export default function Button({
     variant = "primary",
     onClick,
     disabled = false,
+    ariaPressed,
     className = "",
 }: ButtonProps) {
+    // focus-visible = the outline shows only for keyboard navigation, not on mouse click
     const baseStyles =
-        "inline-flex min-h-11 items-center justify-center gap-1.5 rounded-full border-[1.5px] px-5 font-sans text-sm font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-stormy-teal focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed";
+        "inline-flex min-h-12 items-center justify-center gap-1.5 rounded-full border-[1.5px] px-5 font-sans text-[14.5px] font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-stormy-teal disabled:opacity-50 disabled:cursor-not-allowed";
 
     return (
         <button
             type={type}
             onClick={onClick}
             disabled={disabled}
+            aria-pressed={ariaPressed}
             className={`${baseStyles} ${variantStyles[variant]} ${className}`}
         >
             {children}

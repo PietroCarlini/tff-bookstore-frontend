@@ -31,7 +31,16 @@ const mockDetails: BookDetails = {
     description: "A dystopian social science fiction novel.",
 }
 
-export async function searchBooks(query: string): Promise<Book[]> {
+export interface SearchOptions {
+    // true (default): if the call fails mock data are return, so the demo keeps working
+    // false: the error goes up to the caller, who can show a real error message
+    mockFallback?: boolean;
+}
+
+export async function searchBooks(query: string, options: SearchOptions = {}): Promise<Book[]> {
+    
+    const { mockFallback = true } = options;
+
     try {
         const res = await fetch(`${API_URL}/books/search?q=${encodeURIComponent(query)}`); //a way to secure query from special char or spaces
 
@@ -39,9 +48,12 @@ export async function searchBooks(query: string): Promise<Book[]> {
             throw new Error('Book search failed');
         }
 
-        return res.json()
+        const data = await res.json();
+        return data
     }
     catch (err) {
+        if(!mockFallback) throw err;
+
         console.warn("Book search failed, falling back to mock data:", err);
         return mockResults;
     }

@@ -1,10 +1,20 @@
 import Image from "next/image";
 import { getBookDetailsAction } from "@/actions/bookAction";
+import { getListAction } from "@/actions/listsAction";
 import BookActions from "@/components/book/bookAction";
 
 export default async function BookDetailsPage({ params }: { params: Promise<{ id: string }> }) {
     const { id } = await params;
-    const book = await getBookDetailsAction(id);
+
+    // book details and "To read" list are independent: they start together (Promise.all)
+    // if the list can't be read (not logged in, backend error) we fall back to an empty list: the page opens anyway
+    const [book, toReadList] = await Promise.all([
+        getBookDetailsAction(id),
+        getListAction("to-read").catch(() => []),
+    ]);
+
+    // true if this book is already in the "To read" list: it decides the starting look of the "To read" button
+    const isInToRead = toReadList.some((item) => item.ISBN === book.isbn);
 
     // authors is always an array (maybe empty): fallback text if the author is unknown
     const authors = book.authors.join(", ") || "Unknown author";
@@ -15,11 +25,11 @@ export default async function BookDetailsPage({ params }: { params: Promise<{ id
     ];
 
     return (
-        <main className="mx-auto max-w-[1040px] pb-8">
+        <main className="mx-auto max-w-[1040px]">
             {/* mobile: one column; from md up: cover on the left, info on the right */}
-            <div className="flex flex-col gap-4 px-[18px] pt-4 md:flex-row md:items-start md:gap-[60px] md:px-10 md:pt-11">
-                {/* green block: full width on mobile, fixed size on desktop; the real cover sits inside it, not cropped */}
-                <div className="flex h-[216px] w-full shrink-0 items-center justify-center rounded-[14px] bg-seaweed p-3 md:h-[392px] md:w-[280px] md:rounded-2xl md:p-5">
+            <div className="flex flex-col gap-4 px-[18px] pb-1 pt-4 md:flex-row md:items-start md:gap-[60px] md:px-10 md:pb-7 md:pt-11">
+                {/* green block: the real cover sits inside it, not cropped */}
+                <div className="flex h-[200px] w-full shrink-0 items-center justify-center rounded-[14px] bg-seaweed p-3.5 md:h-[392px] md:w-[280px] md:rounded-2xl md:p-5">
                     {book.cover ? (
                         <Image
                             src={book.cover}
@@ -29,7 +39,7 @@ export default async function BookDetailsPage({ params }: { params: Promise<{ id
                             className="h-full w-auto rounded"
                         />
                     ) : (
-                        <p className="text-center font-heading text-base text-carbon">{book.title}</p>
+                        <p className="text-center font-heading text-sm leading-[1.3] text-carbon md:text-base">{book.title}</p>
                     )}
                 </div>
 
@@ -38,22 +48,28 @@ export default async function BookDetailsPage({ params }: { params: Promise<{ id
                     <p className="mt-1 font-sans text-[15px] italic text-stormy-teal md:text-base">{authors}</p>
 
                     {/* desktop only: details as rows above the buttons (on mobile they are a section below the description) */}
-                    <dl className="mt-5 hidden md:block">
+                    <dl className="mb-[26px] mt-[22px] hidden md:block">
                         {details.map((row) => (
-                            <div key={row.label} className="flex items-baseline justify-between border-b border-stormy-teal/10 py-2.5 font-sans text-sm text-carbon">
+                            <div key={row.label} className="flex items-baseline justify-between border-b border-stormy-teal/[0.12] py-[11px] font-sans text-sm text-carbon">
                                 <dt className="text-[11px] font-semibold uppercase tracking-[0.07em] text-stormy-teal">{row.label}</dt>
                                 <dd>{row.value}</dd>
                             </div>
                         ))}
                     </dl>
 
-                    <BookActions isbn={book.isbn} title={book.title} author={authors} cover={book.cover} />
+                    <BookActions
+                        isbn={book.isbn}
+                        title={book.title}
+                        author={authors}
+                        cover={book.cover}
+                        initialSaved={isInToRead}
+                    />
                 </div>
             </div>
 
-            <section className="mt-4 border-t border-muted-teal px-[18px] py-4 md:mt-6 md:px-10 md:py-6">
-                <h2 className="mb-2 font-heading text-base font-medium text-carbon md:text-lg">Description</h2>
-                <p className="max-w-[640px] font-sans text-sm leading-relaxed text-carbon/80">
+            <section className="border-t border-muted-teal px-[18px] py-4 md:px-10 md:pb-12 md:pt-6">
+                <h2 className="mb-2 font-heading text-base font-medium text-carbon md:mb-2.5 md:text-lg">Description</h2>
+                <p className="font-sans text-sm leading-[1.6] text-[#3f4744] md:max-w-[640px] md:text-[14.5px]">
                     {book.description || "No description available."}
                 </p>
             </section>
@@ -63,8 +79,8 @@ export default async function BookDetailsPage({ params }: { params: Promise<{ id
                 <h2 className="mb-2 font-heading text-base font-medium text-carbon">Details</h2>
                 <dl>
                     {details.map((row) => (
-                        <div key={row.label} className="flex justify-between border-t border-stormy-teal/10 py-2 font-sans text-[13.5px] first:border-t-0">
-                            <dt className="text-carbon/70">{row.label}</dt>
+                        <div key={row.label} className="flex justify-between border-t border-stormy-teal/10 py-[7px] font-sans text-[13.5px] first:border-t-0">
+                            <dt className="text-[#5b6560]">{row.label}</dt>
                             <dd className="font-medium text-carbon">{row.value}</dd>
                         </div>
                     ))}

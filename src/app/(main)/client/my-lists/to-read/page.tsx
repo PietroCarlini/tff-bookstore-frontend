@@ -28,7 +28,7 @@ export default async function ToReadPage() {
                             <div className="flex flex-wrap items-start gap-2">
                                 <MarkAsReadButton item={item} />
                                 <RemoveButton type="to-read" isbn={item.ISBN} />
-                            </div>F
+                            </div>
                         </div>
                     </li>
                 ))}
