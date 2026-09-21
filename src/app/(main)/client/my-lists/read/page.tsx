@@ -1,32 +1,27 @@
-import Image from "next/image";
 import { getListAction } from "@/actions/listsAction";
+import ListBookRow from "@/components/lists/ListBookRow";
 import RemoveButton from "@/components/lists/RemoveButton";
 
-export default async function ToReadPage() {
+export default async function ReadPage() {
     const items = await getListAction("read");
 
     return (
-        <main className="p-6">
-            <h1 className="font-heading text-2xl font-semibold text-carbon">Read</h1>
+        <main className="px-[18px] pb-6 pt-1 md:mx-auto md:max-w-[1040px] md:px-10 md:pb-12 md:pt-[34px]">
+            {/* desktop only: on mobile the title is in the green header */}
+            <h1 className="mb-[18px] hidden font-heading text-[26px] font-medium text-carbon md:block">
+                Read
+            </h1>
 
             {items.length === 0 && (
-                <p className="mt-4 text-carbon">No books in this list yet.</p>
+                <p className="py-3.5 font-sans text-sm text-carbon">No books in this list yet.</p>
             )}
 
-            <ul className="mt-6 flex flex-col gap-4">
+            {/* desktop: one column of 720px, aligned with the title */}
+            <ul className="md:max-w-[720px]">
                 {items.map((item) => (
-                    <li key={item.ISBN} className="flex gap-4">
-                        {item.cover_url ? (
-                            <Image src={item.cover_url} alt={item.title} width={64} height={96} className="rounded" />
-                        ) : (
-                            <div className="h-24 w-16 rounded bg-carbon/10" />
-                        )}
-                        <div className="flex flex-col gap-2">
-                            <p className="font-sans text-sm font-medium text-carbon">{item.title}</p>
-                            <p className="font-sans text-xs text-carbon/70">{item.author}</p>
-                            <RemoveButton type="read" isbn={item.ISBN} />
-                        </div>
-                    </li>
+                    <ListBookRow key={item.ISBN} item={item}>
+                        <RemoveButton type="read" isbn={item.ISBN} />
+                    </ListBookRow>
                 ))}
             </ul>
         </main>
