@@ -50,7 +50,12 @@ export default function OrderStatusSelect({ orderId, status, onChanged }: OrderS
                     value={status} // controlled: always the value coming from the server
                     onChange={handleChange}
                     disabled={saving}
-                    className={`w-full appearance-none rounded-lg border py-1.5 pl-2.5 pr-8 font-sans text-xs font-semibold text-carbon focus:outline-none focus:ring-2 focus:ring-stormy-teal disabled:opacity-60 ${statusColors[status]}`}
+                    className={
+                        "h-[34px] w-full cursor-pointer appearance-none rounded-lg border pl-2.5 pr-7 " +
+                        "font-sans text-xs font-semibold text-carbon disabled:opacity-60 " +
+                        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stormy-teal " +
+                        statusColors[status]
+                    }
                 >
                     {options.map((option) => (
                         <option key={option.value} value={option.value}>

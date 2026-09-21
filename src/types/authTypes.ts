@@ -59,3 +59,10 @@ export interface UserProfile {
     client: ClientProfile | null;
     bookshop: BookshopProfile | null;
 }
+
+// body of PATCH /auth/me: the client can change first name, last name and email
+export interface UpdateProfileData {
+    firstname: string;
+    lastname: string;
+    email: string;
+}

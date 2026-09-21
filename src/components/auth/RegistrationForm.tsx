@@ -41,10 +41,10 @@ export default function RegistrationForm() {
     }
 
     return (
-        < form onSubmit = { handleSubmit } className = "flex flex-col gap-4" >
+        <form onSubmit={handleSubmit} className="flex flex-col gap-[13px]">
             <Input
                 id="firstname"
-                label="Firstname"
+                label="First name"
                 type="text"
                 value={firstname}
                 onChange={(e) => setFirstname(e.target.value)}
@@ -52,7 +52,7 @@ export default function RegistrationForm() {
             />
             <Input
                 id="lastname"
-                label="Lastname"
+                label="Last name"
                 type="text"
                 value={lastname}
                 onChange={(e) => setLastname(e.target.value)}
@@ -76,28 +76,24 @@ export default function RegistrationForm() {
             />
             <Input
                 id="confirmPassword"
-                label="Confirm Password"
+                label="Confirm password"
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
             />
-    { error && <p className="text-sm text-red-600">{error}</p> }
+            {/* role="alert": screen readers read the error as soon as it appears */}
+            {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
             <Button type="submit" disabled={isLoading}>
                 {isLoading ? "Signing up..." : "Sign up"}
             </Button>
 
-            <p className="text-sm text-carbon text-center">
+            <p className="mt-1 text-center text-[13.5px] text-carbon">
                 Already have an account?{" "}
                 <Link href="/login" className="text-stormy-teal underline">
                     Log in
                 </Link>
             </p>
-        </form >
+        </form>
     )
-
-
-
-
-
 }

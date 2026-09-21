@@ -1,8 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import Input from "@/components/UI/Input";
-import Button from "@/components/UI/Button";
+import BookshopInput from "@/components/UI/bookshopUI/BookshopInput";
+import BookshopButton from "@/components/UI/bookshopUI/BookshopButton";
 import { addBookToCatalogueAction, updateBookAction } from "@/actions/catalogueAction";
 import { BookStocked, NewBookData } from "@/types/bookshopTypes";
 
@@ -60,26 +60,32 @@ export default function BookForm({ initialData, onSuccess }: BookFormProps) {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
-            <h2 className="font-heading text-xl font-semibold text-carbon">
+        <form onSubmit={handleSubmit}>
+            {/* the id is used by the Modal as the accessible name of the window */}
+            <h2 id="book-form-title" className="mb-[18px] font-heading text-xl font-semibold text-carbon">
                 {initialData ? "Edit book" : "Add a new book"}
             </h2>
 
-            <Input id="isbn" label="ISBN" value={ISBN} onChange={(e) => setISBN(e.target.value)} required />
-            <Input id="title" label="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
-            <Input id="author" label="Author" value={author} onChange={(e) => setAuthor(e.target.value)} required />
-            <Input id="genere" label="Genre" value={genere} onChange={(e) => setGenere(e.target.value)} required />
-            <Input id="publisher" label="Publisher" value={publisher} onChange={(e) => setPublisher(e.target.value)} />
-            <Input id="tag" label="Tag" value={tag} onChange={(e) => setTag(e.target.value)} />
-            <Input id="price" label="Price" type="number" value={price} onChange={(e) => setPrice(e.target.value)} required />
-            <Input id="stock" label="Stock" type="number" value={stock} onChange={(e) => setStock(e.target.value)} required />
-            <Input id="cover_url" label="Cover URL" value={cover_url} onChange={(e) => setCoverUrl(e.target.value)} />
+            {/* mobile: one column; from sm up: two columns */}
+            <div className="grid grid-cols-1 gap-x-4 gap-y-3.5 sm:grid-cols-2">
+                <BookshopInput id="isbn" label="ISBN" value={ISBN} onChange={(e) => setISBN(e.target.value)} required />
+                <BookshopInput id="title" label="Title" value={title} onChange={(e) => setTitle(e.target.value)} required />
+                <BookshopInput id="author" label="Author" value={author} onChange={(e) => setAuthor(e.target.value)} required />
+                <BookshopInput id="publisher" label="Publisher" value={publisher} onChange={(e) => setPublisher(e.target.value)} />
+                <BookshopInput id="genere" label="Genre" value={genere} onChange={(e) => setGenere(e.target.value)} required />
+                <BookshopInput id="tag" label="Tag" value={tag} onChange={(e) => setTag(e.target.value)} />
+                <BookshopInput id="price" label="Price" type="number" step="0.01" min="0" value={price} onChange={(e) => setPrice(e.target.value)} required />
+                <BookshopInput id="stock" label="Stock" type="number" step="1" min="0" value={stock} onChange={(e) => setStock(e.target.value)} required />
+                <BookshopInput id="cover_url" label="Cover URL" value={cover_url} onChange={(e) => setCoverUrl(e.target.value)} className="sm:col-span-2" />
+            </div>
 
-            {error && <p className="text-sm text-red-600">{error}</p>}
+            {error && <p role="alert" className="mt-4 text-sm text-red-600">{error}</p>}
 
-            <Button type="submit" disabled={submitting}>
-                {submitting ? "Saving…" : initialData ? "Save changes" : "Add book"}
-            </Button>
+            <div className="mt-5 flex justify-end">
+                <BookshopButton type="submit" disabled={submitting}>
+                    {submitting ? "Saving…" : initialData ? "Save changes" : "Add book"}
+                </BookshopButton>
+            </div>
         </form>
     );
 }

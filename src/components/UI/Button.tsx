@@ -12,6 +12,8 @@ interface ButtonProps {
     //* only for toggle buttons (e.g. "To read"): true = pressed, false = not pressed; screen readers announce it
     //* if it is not passed, no aria-pressed attribute is rendered (normal buttons)
     ariaPressed?: boolean;
+    //* "md" = normal button (default), "sm" = small one (e.g. "Send a message" in the order card)
+    size?: "md" | "sm";
     //* optional extra classes chosen by who uses the button (e.g. width: "w-full", "flex-1")
     className?: string;
 }
@@ -24,10 +26,17 @@ const variantStyles: Record<NonNullable<ButtonProps["variant"]>, string> = {
     "filled-teal": "border-muted-teal bg-muted-teal text-carbon hover:bg-muted-teal/80",
 };
 
+// height, side padding and text size of each size: the rest of the style is shared
+const sizeStyles: Record<NonNullable<ButtonProps["size"]>, string> = {
+    md: "min-h-12 px-5 text-[14.5px]",
+    sm: "min-h-10 px-4 text-[13px]",
+};
+
 export default function Button({
     children,
     type = "button",
     variant = "primary",
+    size = "md",
     onClick,
     disabled = false,
     ariaPressed,
@@ -35,7 +44,10 @@ export default function Button({
 }: ButtonProps) {
     // focus-visible = the outline shows only for keyboard navigation, not on mouse click
     const baseStyles =
-        "inline-flex min-h-12 items-center justify-center gap-1.5 rounded-full border-[1.5px] px-5 font-sans text-[14.5px] font-semibold transition-colors focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-stormy-teal disabled:opacity-50 disabled:cursor-not-allowed";
+        "inline-flex items-center justify-center gap-1.5 rounded-full border-[1.5px] " +
+        "font-sans font-semibold transition-colors " +
+        "focus-visible:outline-2 focus-visible:outline-offset-[3px] focus-visible:outline-stormy-teal " +
+        "disabled:opacity-50 disabled:cursor-not-allowed";
 
     return (
         <button
@@ -43,7 +55,7 @@ export default function Button({
             onClick={onClick}
             disabled={disabled}
             aria-pressed={ariaPressed}
-            className={`${baseStyles} ${variantStyles[variant]} ${className}`}
+            className={`${baseStyles} ${sizeStyles[size]} ${variantStyles[variant]} ${className}`}
         >
             {children}
         </button>

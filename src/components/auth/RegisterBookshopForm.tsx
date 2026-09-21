@@ -41,7 +41,7 @@ export default function RegisterBookshopForm() {
     }
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-[13px]">
             <Input
                 id="name"
                 label="Bookshop name"
@@ -77,7 +77,7 @@ export default function RegisterBookshopForm() {
             <Input
                 id="phone"
                 label="Phone"
-                type="text"
+                type="tel"
                 value={phone}
                 onChange={(e) => setPhone(e.target.value)}
                 required
@@ -92,21 +92,22 @@ export default function RegisterBookshopForm() {
             />
             <Input
                 id="confirmPassword"
-                label="ConfirmPassword"
+                label="Confirm password"
                 type="password"
                 value={confirmPassword}
                 onChange={(e) => setConfirmPassword(e.target.value)}
                 required
             />
-            {error && <p className="text-sm text-red-600">{error}</p>}
+            {/* role="alert": screen readers read the error as soon as it appears */}
+            {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
             <Button type="submit" disabled={isLoading}>
-                {isLoading ? "Signing up..." : "Signing up"}
+                {isLoading ? "Signing up..." : "Sign up"}
             </Button>
 
-            <p className="text-sm text-carbon text-center">
-                Already an account?{" "}
+            <p className="mt-1 text-center text-[13.5px] text-carbon">
+                Already have an account?{" "}
                 <Link href="/login" className="text-stormy-teal underline">
-                    Login in
+                    Log in
                 </Link>
             </p>
         </form>

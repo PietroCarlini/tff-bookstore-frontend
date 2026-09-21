@@ -33,16 +33,16 @@ export default function LoginForm() {
             //if login failed -> error message and return skipping router.push
             return;
         }
-        //redirecting to home logged in, based on user type
+        //redirecting to catalouge logged in, based on user type
         if (result.user.type === "bookshop") {
-            router.push("/bookshop");
+            router.push("/bookshop/catalogue");
         } else {
             router.push("/client");
         }
     }
 
     return (
-        <form onSubmit={handleSubmit} className="flex flex-col gap-4">
+        <form onSubmit={handleSubmit} className="flex flex-col gap-[13px]">
             <Input
                 id="email"
                 label="Email"
@@ -59,15 +59,16 @@ export default function LoginForm() {
                 onChange={(e) => setPassword(e.target.value)}
                 required
             />
-            <Link href="/forgot-password" className="self-end text-sm text-stormy-teal underline">
+            <Link href="/forgot-password" className="self-end text-[13.5px] text-stormy-teal underline">
                 Forgot your password?
             </Link>
-            {error && <p className="text-sm text-red-600">{error}</p>}
+            {/* role="alert": screen readers read the error as soon as it appears */}
+            {error && <p role="alert" className="text-sm text-red-600">{error}</p>}
             <Button type="submit" disabled={isLoading}>
                 {isLoading ? "Logging in..." : "Log in"}
             </Button>
 
-            <p className="text-sm text-carbon text-center">
+            <p className="mt-1 text-center text-[13.5px] text-carbon">
                 Don&apos;t have an account?{" "}
                 <Link href="/register" className="text-stormy-teal underline">
                     Sign up

@@ -1,4 +1,4 @@
-import { LoginCredentials, RegisterData, RegisterBookshopData, AuthResponse, UserProfile } from "@/types/authTypes";
+import { LoginCredentials, RegisterData, RegisterBookshopData, AuthResponse, UserProfile, UpdateProfileData } from "@/types/authTypes";
 import { headers } from "next/headers";
 const API_URL = process.env.API_URL; 
 
@@ -63,6 +63,25 @@ export async function getProfileRequest(token: string): Promise<UserProfile>{
     })
     if (!res.ok) {
         throw new Error("Failed to load profile");
+    }
+
+    return res.json();
+}
+
+// the client updates its own data; the backend answers with the updated user
+export async function updateProfileRequest(data: UpdateProfileData, token: string): Promise<UserProfile> {
+    const res = await fetch(`${API_URL}/auth/me`, {
+        method: "PATCH",
+        headers: {
+            "Content-Type": "application/json",
+            Authorization: `Bearer ${token}`,
+        },
+        body: JSON.stringify(data),
+    });
+
+    if (!res.ok) {
+        const errorData = await res.json().catch(() => null);
+        throw new Error(errorData?.message || "Failed to update profile");
     }
 
     return res.json();

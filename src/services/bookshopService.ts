@@ -40,7 +40,7 @@ export async function updateMyBookshop(data: UpdateBookshopData, token: string):
         },
         body: JSON.stringify(data),
     });
-
+    console.log("PATCH bookshop status:", res.status);
     if (!res.ok) {
         const errorData = await res.json().catch(() => null);
         throw new Error(errorData?.message || "Failed to update profile");

@@ -23,6 +23,8 @@ export interface BookStocked {
     stock: number;
     cover_url: string | null;
     tag: string | null;
+    inOrder: number; // copies in orders not yet Collected/Canceled: computed by the backend, it is not a DB column
+
 }
 
 //Insert new book in catalogue

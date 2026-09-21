@@ -36,7 +36,7 @@ export default function MarkAsReadButton({ item }: MarkAsReadButtonProps) {
 
     return (
         <div>
-            <Button onClick={handleMarkAsRead} disabled={saving}>
+            <Button size="sm" onClick={handleMarkAsRead} disabled={saving}>
                 {saving ? "Saving..." : "Mark as read"}
             </Button>
             {error && <p role="alert" className="mt-1 text-xs text-red-600">{error}</p>}

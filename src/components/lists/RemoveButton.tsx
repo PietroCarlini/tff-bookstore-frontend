@@ -10,9 +10,9 @@ interface RemoveButtonProps {
     isbn: string;
 }
 
-export default function RemoveButton({ type, isbn} : RemoveButtonProps){
+export default function RemoveButton({ type, isbn }: RemoveButtonProps) {
     const router = useRouter();
-    const [ removing, setRemoving ] = useState(false);
+    const [removing, setRemoving] = useState(false);
 
     async function handleRemove() {
         setRemoving(true);
@@ -20,8 +20,8 @@ export default function RemoveButton({ type, isbn} : RemoveButtonProps){
         router.refresh();// Re-runs the Server Component (the page) so the removed book disappears from the list
     }
 
-    return(
-        <Button variant='secondary' onClick={handleRemove} disabled={removing}>
+    return (
+        <Button variant='secondary' size="sm" onClick={handleRemove} disabled={removing}>
             {removing ? 'Removing..' : 'Remove from list'}
         </Button>
     );

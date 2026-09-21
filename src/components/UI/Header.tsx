@@ -24,6 +24,24 @@ function SearchIcon({ size, className }: { size: number, className?: string }) {
     );
 }
 
+// back arrow used in the mobile bars
+const backIcon = (
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+        <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+);
+
+// pages whose mobile bar is "back arrow + title + burger": title, and where the arrow goes
+// backTo: null = the previous page (browser back), e.g. place order goes back to the book
+const pageBars: Record<string, { title: string; backTo: string | null; backLabel: string }> = {
+    "/client/place-order": { title: "Place an order", backTo: null, backLabel: "Back" },
+    "/client/order-history": { title: "Order history", backTo: "/client", backLabel: "Back to home" },
+    "/client/profile": { title: "Profile", backTo: "/client", backLabel: "Back to home" },
+    "/client/my-lists": { title: "My lists", backTo: "/client", backLabel: "Back to home" },
+    "/client/my-lists/to-read": { title: "To read", backTo: "/client/my-lists", backLabel: "Back to My lists" },
+    "/client/my-lists/read": { title: "Read", backTo: "/client/my-lists", backLabel: "Back to My lists" },
+};
+
 export default function Header({ initial }: HeaderProps) {
     const router = useRouter();
     const pathname = usePathname();
@@ -42,6 +60,13 @@ export default function Header({ initial }: HeaderProps) {
     const genre = getGenre(searchParams.get("genre") ?? "");
     const isResultsPage = pathname === "/client" && (Boolean(term) || Boolean(genre));
     const resultsTitle = term ? "Search" : genre?.name;
+
+    // place order: its back arrow goes to the previous page (the book), not to the home
+    const isPlaceOrder = pathname === "/client/place-order";
+    
+    const bar = pageBars[pathname];
+    // the results page has its own title (it depends on the search): the others come from the table
+    const barTitle = bar?.title ?? (isResultsPage ? resultsTitle : undefined);
 
     // the search bar shows the term of the current search
     // when the URL changes we align the text during the render: no useEffect needed
@@ -78,7 +103,7 @@ export default function Header({ initial }: HeaderProps) {
         </button>
     );
 
-    return (
+        return (
         <>
             <header className="bg-stormy-teal">
                 {/* Mobile bar */}
@@ -91,9 +116,7 @@ export default function Header({ initial }: HeaderProps) {
                                 aria-label="Back to search results"
                                 className={iconButtonStyles}
                             >
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                    <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                                </svg>
+                                {backIcon}
                             </button>
                             <span className="font-sans text-[13px] text-white">Search</span>
                         </div>
@@ -111,17 +134,32 @@ export default function Header({ initial }: HeaderProps) {
                             {burgerButton}
                         </div>
                     </div>
-                ) : isResultsPage ? (
-                    /* results bar: back to home + title + burger */
+                ) : barTitle ? (
+                    /* bar with back arrow + title + burger (fixed-title pages and results) */
                     <div className="flex items-center justify-between px-[18px] py-4 md:hidden">
                         <div className="flex min-w-0 items-center gap-2">
-                            <Link href="/client" aria-label="Back to home" className={iconButtonStyles}>
-                                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" aria-hidden="true">
-                                    <path d="M15 18l-6-6 6-6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
-                                </svg>
-                            </Link>
+                            {bar?.backTo === null ? (
+                                // previous page (e.g. place order goes back to the book)
+                                <button
+                                    type="button"
+                                    onClick={() => router.back()}
+                                    aria-label={bar.backLabel}
+                                    className={iconButtonStyles}
+                                >
+                                    {backIcon}
+                                </button>
+                            ) : (
+                                // a fixed page (the results have no entry in the table: back to the home)
+                                <Link
+                                    href={bar?.backTo ?? "/client"}
+                                    aria-label={bar?.backLabel ?? "Back to home"}
+                                    className={iconButtonStyles}
+                                >
+                                    {backIcon}
+                                </Link>
+                            )}
                             <h1 className="truncate font-heading text-[19px] font-medium text-white">
-                                {resultsTitle}
+                                {barTitle}
                             </h1>
                         </div>
                         {burgerButton}
@@ -195,4 +233,5 @@ export default function Header({ initial }: HeaderProps) {
             )}
         </>
     );
+
 }

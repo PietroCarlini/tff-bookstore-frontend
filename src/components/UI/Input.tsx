@@ -15,10 +15,11 @@ interface InputProps {
 
 const inputBase = "w-full font-sans text-carbon";
 
-// normal form field
+// normal form field: 44px high, focus outline only for keyboard navigation
 const fieldStyles =
-    "rounded-lg border border-carbon/30 bg-white px-3 py-2 text-base " +
-    "focus:outline-none focus:ring-2 focus:ring-stormy-teal aria-invalid:border-red-600";
+    "h-11 rounded-lg border border-carbon/30 bg-white px-3 text-base " +
+    "focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-stormy-teal " +
+    "aria-invalid:border-red-600";
 
 // search pill (mockup): the focus outline shows only for keyboard navigation
 const searchStyles =

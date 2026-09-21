@@ -1,8 +1,8 @@
 "use server";
 
 import { cookies } from 'next/headers';
-import { loginRequest, registerRequest, registerBookshopRequest, getProfileRequest } from '@/services/authService';
-import { LoginCredentials, RegisterData, RegisterBookshopData, AuthUser, UserProfile } from '@/types/authTypes';
+import { loginRequest, registerRequest, registerBookshopRequest, getProfileRequest, updateProfileRequest } from '@/services/authService';
+import { LoginCredentials, RegisterData, RegisterBookshopData, AuthUser, UserProfile, UpdateProfileData } from '@/types/authTypes';
 import { redirect } from "next/navigation";
 
 
@@ -97,4 +97,25 @@ export async function logoutAction():Promise<void> {
     const cookieStore = await cookies();
     cookieStore.delete('token');
     redirect('/login')
+}
+
+// if true => the updated profile / if false => the message from the backend
+type UpdateProfileResult = { success: true; profile: UserProfile } | { success: false; message: string };
+
+export async function updateProfileAction(data: UpdateProfileData): Promise<UpdateProfileResult> {
+    try {
+        const cookieStore = await cookies();
+        const token = cookieStore.get('token')?.value;
+        if (!token) {
+            throw new Error('Not authenticated');
+        }
+        const profile = await updateProfileRequest(data, token);
+        return { success: true, profile };
+    }
+    catch (error) {
+        return {
+            success: false,
+            message: error instanceof Error ? error.message : 'Failed to update profile',
+        };
+    }
 }

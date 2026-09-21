@@ -20,7 +20,7 @@ const statusConfig: Record<OrderStatus, StatusConfig> = {
         label: "Sent",
         className: statusColors.Sent,
         icon: (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M3 11l18-8-8 18-2-8-8-2z" stroke="currentColor" strokeWidth="1.8" strokeLinejoin="round" />
             </svg>
         ),
@@ -29,7 +29,7 @@ const statusConfig: Record<OrderStatus, StatusConfig> = {
         label: "In Progress",
         className: statusColors["In Progress"],
         icon: (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8" />
                 <path d="M12 7v5l3 2" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
             </svg>
@@ -39,7 +39,7 @@ const statusConfig: Record<OrderStatus, StatusConfig> = {
         label: "Ready for pickup",
         className: statusColors.Ready,
         icon: (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M4 12l5 5L20 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
             </svg>
         ),
@@ -48,7 +48,7 @@ const statusConfig: Record<OrderStatus, StatusConfig> = {
         label: "Collected",
         className: statusColors.Collected,
         icon: (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <path d="M20 6L9 17l-5-5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
                 <path d="M4 12l1.5 1.5" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
             </svg>
@@ -58,7 +58,7 @@ const statusConfig: Record<OrderStatus, StatusConfig> = {
         label: "Canceled",
         className: statusColors.Canceled,
         icon: (
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" aria-hidden="true">
                 <circle cx="12" cy="12" r="9" stroke="currentColor" strokeWidth="1.8" />
                 <path d="M9 9l6 6M15 9l-6 6" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" />
             </svg>
@@ -69,7 +69,13 @@ const statusConfig: Record<OrderStatus, StatusConfig> = {
 export default function OrderStatusBadge({ status }: { status: OrderStatus }) {
     const { label, className, icon } = statusConfig[status];
     return (
-        <span className={`inline-flex items-center gap-1.5 rounded-full border px-3 py-1 font-sans text-xs font-semibold text-carbon ${className}`}>
+        <span
+            className={
+                "inline-flex items-center gap-1.5 whitespace-nowrap rounded-full border " +
+                "px-[11px] py-[5px] font-sans text-[11.5px] font-semibold leading-none text-carbon " +
+                className
+            }
+        >
             {icon}
             {label}
         </span>

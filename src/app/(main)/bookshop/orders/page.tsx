@@ -5,9 +5,19 @@ import { getBookshopOrdersAction } from "@/actions/orderAction";
 import OrderPriceInput from "@/components/order/OrderPriceInput";
 import { BookshopOrder } from "@/types/orderTypes";
 import OrderStatusSelect from "@/components/order/OrderStatusSelect";
-import Input from "@/components/UI/Input";
-import Button from "@/components/UI/Button";
+import BookshopInput from "@/components/UI/bookshopUI/BookshopInput";
+import BookshopButton from "@/components/UI/bookshopUI/BookshopButton";
 
+// shared column layout for header + rows, so labels and values always line up (proportions from the mockup)
+const columns =
+    "grid grid-cols-[1.5fr_1.1fr_1.3fr_1fr_1.25fr_0.9fr_0.9fr_0.9fr] items-center gap-2 " +
+    "font-sans text-[12.5px] leading-[1.35] text-carbon";
+
+// min-w-0 + break-words: a long email or title goes on a new line instead of leaving its column
+const cell = "min-w-0 break-words";
+
+// "en-GB" always gives dd/mm/yyyy, whatever the language of the browser
+const formatDate = (date: string) => new Date(date).toLocaleDateString("en-GB");
 
 export default function BookshopOrdersPage() {
     const [query, setQuery] = useState('');
@@ -37,21 +47,20 @@ export default function BookshopOrdersPage() {
         fetchOrders(query || undefined) //if search is clicked with no text (undefined), recharge all orders 
     }
 
-    // shared column layout for header + rows, so labels and values always line up
-    const columns = "grid grid-cols-8 gap-2";
-
     return (
-        <main className="p-6">
-            <h1 className="font-heading text-2xl font-semibold text-carbon">Orders</h1>
+        <main className="px-[18px] pb-8 pt-7 md:px-7">
+            <h1 className="mb-[18px] font-heading text-2xl font-semibold text-carbon">Orders</h1>
 
-            <form onSubmit={handleSearch} className="mt-6 flex items-end gap-3">
-                <Input
+            <form onSubmit={handleSearch} className="mb-5 flex items-end gap-3">
+                {/* mobile: the field takes the space left next to the button; desktop: 260px */}
+                <BookshopInput
                     id="search"
                     label="Search the orders"
                     value={query}
                     onChange={(e) => setQuery(e.target.value)}
+                    className="min-w-0 flex-1 md:w-[260px] md:flex-none"
                 />
-                <Button type="submit">Search</Button>
+                <BookshopButton type="submit">Search</BookshopButton>
             </form>
 
             {loading && <p className="mt-4 text-carbon">Loading...</p>}
@@ -61,54 +70,63 @@ export default function BookshopOrdersPage() {
             )}
 
             {orders.length > 0 && (
-                <div role="table" aria-label="Orders" className="mt-6 font-sans text-sm text-carbon">
-                    {/* header row */}
-                    <div role="row" className={`${columns} border-b border-carbon/20 py-2 font-medium`}>
-                        <span role="columnheader">Client</span>
-                        <span role="columnheader">ISBN</span>
-                        <span role="columnheader">Title</span>
-                        <span role="columnheader">Author</span>
-                        <span role="columnheader">Status</span>
-                        <span role="columnheader">Order date</span>
-                        <span role="columnheader">Price</span>
-                        <span role="columnheader">Last modified</span>
+                // on a narrow screen the table keeps its width and scrolls sideways inside this box
+                // tabIndex={0}: so who uses the keyboard can scroll the box too
+                <div
+                    role="region"
+                    aria-label="Orders table"
+                    tabIndex={0}
+                    className="overflow-x-auto focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stormy-teal"
+                >
+                    <div role="table" aria-label="Orders" className="min-w-[960px]">
+                        {/* header row */}
+                        <div role="row" className={`${columns} border-b border-carbon/20 py-2 font-semibold`}>
+                            <span role="columnheader" className={cell}>Client</span>
+                            <span role="columnheader" className={cell}>ISBN</span>
+                            <span role="columnheader" className={cell}>Title</span>
+                            <span role="columnheader" className={cell}>Author</span>
+                            <span role="columnheader" className={cell}>Status</span>
+                            <span role="columnheader" className={cell}>Order date</span>
+                            <span role="columnheader" className={cell}>Price</span>
+                            <span role="columnheader" className={cell}>Last modified</span>
+                        </div>
+
+                        <ul>
+                            {orders.map((order) => {
+                                // for the demo, an order contains one single book
+                                const item = order.orderItems[0];
+
+                                return (
+                                    <li
+                                        key={order.id}
+                                        role="row"
+                                        className={`${columns} border-b border-carbon/10 py-2.5`}
+                                    >
+                                        <span role="cell" className={cell}>{order.client.email}</span>
+                                        <span role="cell" className={cell}>{item.ISBN}</span>
+                                        <span role="cell" className={cell}>{item.title}</span>
+                                        <span role="cell" className={cell}>{item.author}</span>
+                                        <span role="cell" className={cell}>
+                                            <OrderStatusSelect
+                                                orderId={order.id}
+                                                status={order.state}
+                                                onChanged={() => fetchOrders(query || undefined)} // keep the current search after a PATCH
+                                            />
+                                        </span>
+                                        <span role="cell" className={cell}>{formatDate(order.createdAt)}</span>
+                                        <span role="cell" className={cell}>
+                                            <OrderPriceInput
+                                                orderId={order.id}
+                                                price={item.price}
+                                                onChanged={() => fetchOrders(query || undefined)} // keep the current search after a PATCH
+                                            />
+                                        </span>
+                                        <span role="cell" className={cell}>{formatDate(order.updatedAt)}</span>
+                                    </li>
+                                );
+                            })}
+                        </ul>
                     </div>
-
-                    <ul>
-                        {orders.map((order) => {
-                            // for the demo, an order contains one single book
-                            const item = order.orderItems[0];
-
-                            return (
-                                <li
-                                    key={order.id}
-                                    role="row"
-                                    className={`${columns} items-center border-b border-carbon/10 py-2`}
-                                >
-                                    <span role="cell">{order.client.email}</span>
-                                    <span role="cell">{item.ISBN}</span>
-                                    <span role="cell">{item.title}</span>
-                                    <span role="cell">{item.author}</span>
-                                    <span role="cell">
-                                        <OrderStatusSelect
-                                            orderId={order.id}
-                                            status={order.state}
-                                            onChanged={() => fetchOrders(query || undefined)} // keep the current search after a PATCH
-                                        />
-                                    </span>
-                                    <span role="cell">{new Date(order.createdAt).toLocaleDateString()}</span>
-                                    <span role="cell">
-                                        <OrderPriceInput
-                                            orderId={order.id}
-                                            price={item.price}
-                                            onChanged={() => fetchOrders(query || undefined)} // keep the current search after a PATCH
-                                        />
-                                    </span>
-                                    <span role="cell">{new Date(order.updatedAt).toLocaleDateString()}</span>
-                                </li>
-                            );
-                        })}
-                    </ul>
                 </div>
             )}
         </main>

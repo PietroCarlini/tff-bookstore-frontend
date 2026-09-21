@@ -64,7 +64,10 @@ export default function OrderPriceInput({ orderId, price, onChanged }: OrderPric
                     }}
                     onBlur={handleSave}
                     readOnly={saving} // readOnly instead of disabled: a disabled input would drop the keyboard focus
-                    className="w-20 rounded border border-carbon/20 bg-white px-2 py-1 font-sans text-xs text-carbon"
+                    className={
+                        "h-8 w-16 rounded-md border border-carbon/30 bg-white px-2 font-sans text-xs text-carbon " +
+                        "focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-stormy-teal"
+                    }
                 />
             </div>
 

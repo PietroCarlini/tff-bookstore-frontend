@@ -3,8 +3,8 @@
 import { useState, useEffect } from "react";
 import { getMyBookshopAction, updateMyBookshopAction } from "@/actions/bookshopAction";
 import { Bookshop } from "@/types/bookshopTypes";
-import Input from "@/components/UI/Input";
-import Button from "@/components/UI/Button";
+import BookshopInput from "@/components/UI/bookshopUI/BookshopInput";
+import BookshopButton from "@/components/UI/bookshopUI/BookshopButton";
 
 // converts a Bookshop into the shape of the form (null opening hours => empty string, an input can't hold null)
 function toForm(bookshop: Bookshop) {
@@ -74,9 +74,9 @@ export default function BookshopProfilePage() {
     }
 
     return (
-        <main className="p-6">
-            <h1 className="font-heading text-2xl font-semibold text-carbon">Profile</h1>
-            <p className="mt-2 font-sans text-sm text-carbon/70">
+        <main className="px-[18px] pb-8 pt-7 md:px-7">
+            <h1 className="mb-2 font-heading text-2xl font-semibold text-carbon">Profile</h1>
+            <p className="mb-5 font-sans text-sm leading-normal text-[#3f4744]">
                 This is the information clients see when they choose your bookshop for an order.
             </p>
 
@@ -84,27 +84,30 @@ export default function BookshopProfilePage() {
             {error && <p className="mt-4 text-red-600">{error}</p>}
 
             {!loading && !error && (
-                <form onSubmit={handleSubmit} className="mt-6 flex max-w-md flex-col gap-4">
-                    <Input id="name" label="Name" value={form.name} onChange={handleChange} required />
-                    <Input id="city" label="City" value={form.city} onChange={handleChange} required />
-                    <Input id="address" label="Address" value={form.address} onChange={handleChange} required />
-                    <Input id="email" label="Email" type="email" value={form.email} onChange={handleChange} required />
-                    <Input id="phone" label="Phone" type="tel" value={form.phone} onChange={handleChange} required />
-                    <Input id="openingHours" label="Opening hours" value={form.openingHours} onChange={handleChange} />
+                <form onSubmit={handleSubmit}>
+                    {/* mobile: one column; from sm up: two columns (Address and Opening hours take the full row) */}
+                    <div className="grid max-w-[560px] grid-cols-1 gap-x-4 gap-y-3.5 sm:grid-cols-2">
+                        <BookshopInput id="name" label="Name" value={form.name} onChange={handleChange} required />
+                        <BookshopInput id="city" label="City" value={form.city} onChange={handleChange} required />
+                        <BookshopInput id="address" label="Address" value={form.address} onChange={handleChange} required className="sm:col-span-2" />
+                        <BookshopInput id="email" label="Email" type="email" value={form.email} onChange={handleChange} required />
+                        <BookshopInput id="phone" label="Phone" type="tel" value={form.phone} onChange={handleChange} required />
+                        <BookshopInput id="openingHours" label="Opening hours" value={form.openingHours} onChange={handleChange} className="sm:col-span-2" />
+                    </div>
 
                     {/* the live region is always in the page: screen readers announce the message when it appears */}
-                    <div aria-live="polite">
+                    <div aria-live="polite" className="empty:hidden">
                         {result && (
-                            <p className={`font-sans text-sm ${result.success ? "text-carbon" : "text-red-600"}`}>
+                            <p className={`mt-4 font-sans text-sm ${result.success ? "text-carbon" : "text-red-600"}`}>
                                 {result.message}
                             </p>
                         )}
                     </div>
 
-                    <div>
-                        <Button type="submit" disabled={saving}>
+                    <div className="mt-[18px]">
+                        <BookshopButton type="submit" disabled={saving}>
                             {saving ? "Saving..." : "Save changes"}
-                        </Button>
+                        </BookshopButton>
                     </div>
                 </form>
             )}
