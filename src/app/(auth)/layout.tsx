@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
@@ -12,8 +13,15 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
                     "[&_h1]:mb-[18px] [&_h1]:font-heading [&_h1]:text-2xl [&_h1]:font-semibold [&_h1]:text-carbon"
                 }
             >
-                <Link href="/" className="mb-1 block w-fit font-heading text-lg font-medium text-stormy-teal">
-                    Bam-book
+                <Link
+                    href="/"
+                    className={
+                        "mb-3 block w-fit rounded " +
+                        "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-stormy-teal"
+                    }
+                >
+                    {/* dark logo: the card is white */}
+                    <Image src="/logo.png" alt="Bam-book, home" width={160} height={57} priority />
                 </Link>
                 {children}
             </div>

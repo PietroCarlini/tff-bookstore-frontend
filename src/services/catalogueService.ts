@@ -1,5 +1,5 @@
 import { BookStocked, NewBookData } from '@/types/bookshopTypes';
-import { log } from 'console';
+
 
 const API_URL = process.env.API_URL;
 

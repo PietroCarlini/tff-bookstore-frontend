@@ -1,5 +1,6 @@
 import Link from "next/link";
 import Footer from "@/components/UI/Footer";
+import Image from "next/image";
 
 // same look as the Button component, but these are links: they go to another page
 const linkBase =
@@ -15,9 +16,17 @@ export default function Home() {
     return (
         <div className="flex min-h-screen flex-col">
             <main className="flex-1">
-                <div className="px-[18px] pb-2 pt-11 text-center md:px-10 md:pb-2.5 md:pt-16">
-                    <h1 className="font-heading text-4xl font-medium text-stormy-teal md:text-[72px] md:leading-[1.05]">
-                        Bam-book
+                <div className="px-[18px] pb-2 pt-9 text-center md:px-10 md:pb-2.5 md:pt-14">
+                    <h1 className="flex justify-center">
+                        <Image
+                            src="/logo.png"
+                            alt="Bam-book"
+                            width={1000}
+                            height={355}
+                            sizes="(min-width: 768px) 480px, 260px"
+                            priority
+                            className="h-auto w-[260px] md:w-[480px]"
+                        />
                     </h1>
                 </div>
 

@@ -17,7 +17,7 @@ export default async function ClientLayout({ children }: { children: React.React
         <div className="flex min-h-screen flex-col">
             {/* Suspense: the Header reads the URL (useSearchParams), and Next needs a boundary for the production build.
                 The fallback is an empty green bar of the same height, so nothing jumps */}
-            <Suspense fallback={<div className="h-[76px] bg-stormy-teal md:h-[74px]" />}>
+            <Suspense fallback={<div className="h-[88px] bg-stormy-teal md:h-[86px]" />}>
                 <Header initial={initial} />
             </Suspense>
             <div className="flex-1">{children}</div>

@@ -1,5 +1,4 @@
 import { LoginCredentials, RegisterData, RegisterBookshopData, AuthResponse, UserProfile, UpdateProfileData } from "@/types/authTypes";
-import { headers } from "next/headers";
 const API_URL = process.env.API_URL; 
 
 //* AuthResponse: manages the datas 'expected shape' / loginRequest return a Promise: TS expects the resolved value will confrm to that 'shape'

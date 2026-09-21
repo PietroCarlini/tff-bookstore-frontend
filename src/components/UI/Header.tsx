@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname, useRouter, useSearchParams } from "next/navigation";
 import BurgerMenu from "./BurgerMenu";
 import { getGenre } from "@/constants/genres";
+import Image from "next/image";
 
 interface HeaderProps {
     initial: string; // first letter of the logged user, computed by the layout (server side)
@@ -61,9 +62,6 @@ export default function Header({ initial }: HeaderProps) {
     const isResultsPage = pathname === "/client" && (Boolean(term) || Boolean(genre));
     const resultsTitle = term ? "Search" : genre?.name;
 
-    // place order: its back arrow goes to the previous page (the book), not to the home
-    const isPlaceOrder = pathname === "/client/place-order";
-    
     const bar = pageBars[pathname];
     // the results page has its own title (it depends on the search): the others come from the table
     const barTitle = bar?.title ?? (isResultsPage ? resultsTitle : undefined);
@@ -103,9 +101,9 @@ export default function Header({ initial }: HeaderProps) {
         </button>
     );
 
-        return (
+    return (
         <>
-            <header className="bg-stormy-teal">
+            <header className="sticky top-0 z-40 bg-stormy-teal p-1.5">
                 {/* Mobile bar */}
                 {isBookPage ? (
                     <div className="flex items-center justify-between px-[18px] py-4 md:hidden">
@@ -166,18 +164,30 @@ export default function Header({ initial }: HeaderProps) {
                     </div>
                 ) : (
                     <div className="flex items-center justify-between px-[18px] py-4 md:hidden">
-                        <Link href="/client" className="font-heading text-[21px] text-white">
-                            Bam-book
+                        <Link
+                            href="/client"
+                            className={
+                                "rounded " +
+                                "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                            }
+                        >
+                            <Image src="/logo-light.png" alt="Bam-book, home" width={131} height={44} priority className="h-11 w-auto" />
                         </Link>
                         {burgerButton}
                     </div>
                 )}
 
                 {/* Desktop bar */}
-                <div className="hidden items-center justify-between gap-6 px-10 py-4 md:flex">
+                <div className="hidden items-center justify-between gap-6 px-10 py-3 md:flex">
                     <div className="flex min-w-0 items-center gap-6">
-                        <Link href="/client" className="shrink-0 font-heading text-[22px] text-white">
-                            Bam-book
+                        <Link
+                            href="/client"
+                            className={
+                                "flex shrink-0 rounded " +
+                                "focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white"
+                            }
+                        >
+                            <Image src="/logo-light.png" alt="Bam-book, home" width={149} height={50} priority className="h-[50px] w-auto" />
                         </Link>
                         <form role="search" onSubmit={handleSearch} className="relative min-w-0 max-w-[300px] flex-[0_1_300px]">
                             {/* real label but visually hidden: the placeholder alone is not enough for screen readers */}
