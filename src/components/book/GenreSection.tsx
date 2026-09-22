@@ -48,7 +48,9 @@ export default async function GenreSection({ genre }: { genre: Genre }) {
         // mockFallback: false -> if Google fails we want the error state, not fake books
         const found = await searchBooksAction(genre.query, { mockFallback: false });
         // the backend sends up to 10 books: we show only the first 6
-        books = found.slice(0, BOOKS_PER_SECTION);
+        //books = found.slice(0, BOOKS_PER_SECTION);
+        const shuffled = [...found].sort(() => Math.random() - 0.5); //randomy
+        books = shuffled.slice(0, BOOKS_PER_SECTION);
     } catch {
         failed = true;
     }

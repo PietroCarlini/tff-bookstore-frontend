@@ -48,14 +48,19 @@ export default async function BookDetailsPage({ params }: { params: Promise<{ id
                     <p className="mt-1 font-sans text-[15px] italic text-stormy-teal md:text-base">{authors}</p>
 
                     {/* desktop only: details as rows above the buttons (on mobile they are a section below the description) */}
-                    <dl className="mb-[26px] mt-[22px] hidden md:block">
+                    <div className="mb-[26px] mt-[22px] hidden md:block">
                         {details.map((row) => (
-                            <div key={row.label} className="flex items-baseline justify-between border-b border-stormy-teal/[0.12] py-[11px] font-sans text-sm text-carbon">
-                                <dt className="text-[11px] font-semibold uppercase tracking-[0.07em] text-stormy-teal">{row.label}</dt>
-                                <dd>{row.value}</dd>
+                            <div
+                                key={row.label}
+                                role="group"
+                                aria-label={`${row.label} : ${row.value}`}
+                                className="flex items-baseline justify-between border-b border-stormy-teal/[0.12] py-[11px] font-sans text-sm text-carbon"
+                            >
+                                <span className="text-[11px] font-semibold uppercase tracking-[0.07em] text-stormy-teal">{row.label}</span>
+                                <span>{row.value}</span>
                             </div>
                         ))}
-                    </dl>
+                    </div>
 
                     <BookActions
                         isbn={book.isbn}
@@ -77,14 +82,19 @@ export default async function BookDetailsPage({ params }: { params: Promise<{ id
             {/* mobile only: details table below the description */}
             <section className="border-t border-muted-teal px-[18px] py-4 md:hidden">
                 <h2 className="mb-2 font-heading text-base font-medium text-carbon">Details</h2>
-                <dl>
+                <div>
                     {details.map((row) => (
-                        <div key={row.label} className="flex justify-between border-t border-stormy-teal/10 py-[7px] font-sans text-[13.5px] first:border-t-0">
-                            <dt className="text-[#5b6560]">{row.label}</dt>
-                            <dd className="font-medium text-carbon">{row.value}</dd>
+                        <div
+                            key={row.label}
+                            role="group"
+                            aria-label={`${row.label} : ${row.value}`}
+                            className="flex justify-between border-t border-stormy-teal/10 py-[7px] font-sans text-[13.5px] first:border-t-0"
+                        >
+                            <span className="text-[#5b6560]">{row.label}</span>
+                            <span className="font-medium text-carbon">{row.value}</span>
                         </div>
                     ))}
-                </dl>
+                </div>
             </section>
         </main>
     );
