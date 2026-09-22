@@ -1,8 +1,16 @@
+import { redirect } from "next/navigation";
+import { getProfileAction } from "@/actions/authAction";
 import Sidebar from "@/app/(main)/bookshop/Sidebar";
 
-export default function BookshopLayout({ children }: { children: React.ReactNode }) {
+export default async function BookshopLayout({ children }: { children: React.ReactNode }) {
+    const profile = await getProfileAction().catch(() => null);
+
+    // not logged in, or logged in as a client: this area is for bookshops only
+    if (!profile?.bookshop) {
+        redirect("/login");
+    }
+
     return (
-        // column on mobile (bar on top, page below), row from md up (sidebar on the left)
         <div className="flex min-h-screen flex-col md:flex-row">
             <Sidebar />
             <div className="min-w-0 flex-1">{children}</div>

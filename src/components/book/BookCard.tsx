@@ -17,9 +17,9 @@ export default function BookCard({ book }: { book: Book }) {
             {/* relative + overflow-hidden: the image (fill) takes the whole block, cropped to the rounded corners */}
             <div
                 className={
-                    "relative mb-2 flex h-[138px] w-[100px] items-center justify-center " +
+                    "relative mb-2 flex aspect-[2/3] w-[100px] shrink-0 items-center justify-center " +
                     "overflow-hidden rounded-[10px] bg-seaweed p-2 " +
-                    "md:mb-2.5 md:h-[190px] md:w-full md:p-2.5"
+                    "md:mb-2.5 md:w-full md:p-2.5"
                 }
             >
                 {book.cover ? (
